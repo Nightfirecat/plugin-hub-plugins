@@ -142,6 +142,8 @@ class VirtualLevelUpsInterfaceInput extends ChatboxInput implements KeyListener
 		}
 
 		triggerCloseViaMessage();
+
+		e.consume();
 	}
 
 	@Override
