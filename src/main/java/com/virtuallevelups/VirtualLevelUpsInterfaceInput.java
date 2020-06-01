@@ -203,7 +203,7 @@ class VirtualLevelUpsInterfaceInput extends ChatboxInput implements KeyListener
 			return;
 		}
 
-		final int fireworksGraphic = plugin.getFireworksGraphicId();
+		final int fireworksGraphic = plugin.getConfig().showFireworks().getGraphicId();
 
 		if (fireworksGraphic == -1)
 		{

@@ -72,10 +72,6 @@ import net.runelite.client.util.ImageUploadStyle;
 @Slf4j
 public class VirtualLevelUpsPlugin extends Plugin
 {
-	private static final int LEVEL_UP_FIREWORKS_GRAPHIC = 199;
-	private static final int LEVEL_UP_99_FIREWORKS_GRAPHIC = 1388;
-	private static final int LEVEL_UP_MAX_FIREWORKS_GRAPHIC = 1389;
-
 	@Getter(AccessLevel.PACKAGE)
 	@Inject
 	private Client client;
@@ -220,26 +216,6 @@ public class VirtualLevelUpsPlugin extends Plugin
 			{
 				previousXpMap.put(skill, client.getSkillExperience(skill));
 			}
-		}
-	}
-
-	/**
-	 * Gets the level up firework ID associated with the selected configuration value for fireworks display.
-	 *
-	 * @return The graphic ID of the chosen fireworks, or {@code -1} if no fireworks should be displayed.
-	 */
-	int getFireworksGraphicId()
-	{
-		switch (config.showFireworks())
-		{
-			case NORMAL:
-				return LEVEL_UP_FIREWORKS_GRAPHIC;
-			case MAX:
-				return LEVEL_UP_99_FIREWORKS_GRAPHIC;
-			default:
-				log.debug("Unknown showFireworks config encountered, falling through to NONE case!");
-			case NONE:
-				return -1;
 		}
 	}
 
