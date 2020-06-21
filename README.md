@@ -17,5 +17,7 @@ level
 ### Show level-up fireworks
 
 Show fireworks when reaching a new virtual level  
+`None` will not display any fireworks on virtual level up  
 `Normal` will display fireworks like those seen at levels 2-98  
-`Max` will show fireworks like seen at level 99
+`99` will show fireworks like seen at level 99  
+`Max total` will show fireworks like seen when reaching max total
