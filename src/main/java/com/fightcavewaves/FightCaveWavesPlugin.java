@@ -55,10 +55,10 @@ public class FightCaveWavesPlugin extends Plugin
 	private static final int FIGHT_CAVE_REGION = 9551;
 	private static final int MAX_MONSTERS_OF_TYPE_PER_WAVE = 2;
 
-	static final int MAX_WAVE = 63;
+	static final int MAX_FIGHT_CAVE_WAVE = 63;
 
 	@Getter
-	static final List<EnumMap<WaveMonster, Integer>> WAVES = new ArrayList<>();
+	static final List<EnumMap<FightCaveMonster, Integer>> FIGHT_CAVE_WAVES = new ArrayList<>();
 
 	@Getter
 	private int currentWave = -1;
@@ -74,42 +74,7 @@ public class FightCaveWavesPlugin extends Plugin
 
 	static
 	{
-		final WaveMonster[] waveMonsters = WaveMonster.values();
-
-		// Add wave 1, future waves are derived from its contents
-		final EnumMap<WaveMonster, Integer> waveOne = new EnumMap<>(WaveMonster.class);
-		waveOne.put(waveMonsters[0], 1);
-		WAVES.add(waveOne);
-
-		for (int wave = 1; wave < MAX_WAVE; wave++)
-		{
-			final EnumMap<WaveMonster, Integer> prevWave = WAVES.get(wave - 1).clone();
-			int maxMonsterOrdinal = -1;
-
-			for (int i = 0; i < waveMonsters.length; i++)
-			{
-				final int ordinalMonsterQuantity = prevWave.getOrDefault(waveMonsters[i], 0);
-
-				if (ordinalMonsterQuantity == MAX_MONSTERS_OF_TYPE_PER_WAVE)
-				{
-					maxMonsterOrdinal = i;
-					break;
-				}
-			}
-
-			if (maxMonsterOrdinal >= 0)
-			{
-				prevWave.remove(waveMonsters[maxMonsterOrdinal]);
-			}
-
-			final int addedMonsterOrdinal = maxMonsterOrdinal >= 0 ? maxMonsterOrdinal + 1 : 0;
-			final WaveMonster addedMonster = waveMonsters[addedMonsterOrdinal];
-			final int addedMonsterQuantity = prevWave.getOrDefault(addedMonster, 0);
-
-			prevWave.put(addedMonster, addedMonsterQuantity + 1);
-
-			WAVES.add(prevWave);
-		}
+		initializeFightCaveMonsters();
 	}
 
 	@Provides
@@ -165,8 +130,48 @@ public class FightCaveWavesPlugin extends Plugin
 		return ArrayUtils.contains(client.getMapRegions(), FIGHT_CAVE_REGION);
 	}
 
-	static String formatMonsterQuantity(final WaveMonster monster, final int quantity)
+	static String formatMonsterQuantity(final FightCaveMonster monster, final int quantity)
 	{
 		return String.format("%dx %s", quantity, monster);
+	}
+
+	private static void initializeFightCaveMonsters()
+	{
+		final FightCaveMonster[] fightCaveMonsters = FightCaveMonster.values();
+
+		// Add wave 1, future waves are derived from its contents
+		final EnumMap<FightCaveMonster, Integer> waveOne = new EnumMap<>(FightCaveMonster.class);
+		waveOne.put(fightCaveMonsters[0], 1);
+		FIGHT_CAVE_WAVES.add(waveOne);
+
+		for (int wave = 1; wave < MAX_FIGHT_CAVE_WAVE; wave++)
+		{
+			final EnumMap<FightCaveMonster, Integer> prevWave = FIGHT_CAVE_WAVES.get(wave - 1).clone();
+			int maxMonsterOrdinal = -1;
+
+			for (int i = 0; i < fightCaveMonsters.length; i++)
+			{
+				final int ordinalMonsterQuantity = prevWave.getOrDefault(fightCaveMonsters[i], 0);
+
+				if (ordinalMonsterQuantity == MAX_MONSTERS_OF_TYPE_PER_WAVE)
+				{
+					maxMonsterOrdinal = i;
+					break;
+				}
+			}
+
+			if (maxMonsterOrdinal >= 0)
+			{
+				prevWave.remove(fightCaveMonsters[maxMonsterOrdinal]);
+			}
+
+			final int addedMonsterOrdinal = maxMonsterOrdinal >= 0 ? maxMonsterOrdinal + 1 : 0;
+			final FightCaveMonster addedMonster = fightCaveMonsters[addedMonsterOrdinal];
+			final int addedMonsterQuantity = prevWave.getOrDefault(addedMonster, 0);
+
+			prevWave.put(addedMonster, addedMonsterQuantity + 1);
+
+			FIGHT_CAVE_WAVES.add(prevWave);
+		}
 	}
 }

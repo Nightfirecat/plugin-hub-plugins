@@ -73,16 +73,16 @@ class WaveOverlay extends Overlay
 		if (config.waveDisplay() == WaveDisplayMode.CURRENT
 			|| config.waveDisplay() == WaveDisplayMode.BOTH)
 		{
-			final Map<WaveMonster, Integer> waveContents = FightCaveWavesPlugin.getWAVES().get(waveIndex);
+			final Map<FightCaveMonster, Integer> waveContents = FightCaveWavesPlugin.getFIGHT_CAVE_WAVES().get(waveIndex);
 
 			addWaveInfo("Wave " + plugin.getCurrentWave(), waveContents);
 		}
 
 		if ((config.waveDisplay() == WaveDisplayMode.NEXT
 			|| config.waveDisplay() == WaveDisplayMode.BOTH)
-			&& currentWave != FightCaveWavesPlugin.MAX_WAVE)
+			&& currentWave != FightCaveWavesPlugin.MAX_FIGHT_CAVE_WAVE)
 		{
-			final Map<WaveMonster, Integer> waveContents = FightCaveWavesPlugin.getWAVES().get(waveIndex + 1);
+			final Map<FightCaveMonster, Integer> waveContents = FightCaveWavesPlugin.getFIGHT_CAVE_WAVES().get(waveIndex + 1);
 
 			addWaveInfo("Next wave", waveContents);
 		}
@@ -90,7 +90,7 @@ class WaveOverlay extends Overlay
 		return panelComponent.render(graphics);
 	}
 
-	private void addWaveInfo(final String headerText, final Map<WaveMonster, Integer> waveContents)
+	private void addWaveInfo(final String headerText, final Map<FightCaveMonster, Integer> waveContents)
 	{
 		panelComponent.getChildren().add(TitleComponent.builder()
 			.text(headerText)
@@ -103,15 +103,15 @@ class WaveOverlay extends Overlay
 		}
 	}
 
-	private static Collection<LineComponent> buildWaveLines(final Map<WaveMonster, Integer> wave)
+	private static Collection<LineComponent> buildWaveLines(final Map<FightCaveMonster, Integer> wave)
 	{
-		final List<Map.Entry<WaveMonster, Integer>> monsters = new ArrayList<>(wave.entrySet());
+		final List<Map.Entry<FightCaveMonster, Integer>> monsters = new ArrayList<>(wave.entrySet());
 		monsters.sort(Map.Entry.comparingByKey());
 		final List<LineComponent> outputLines = new ArrayList<>();
 
-		for (Map.Entry<WaveMonster, Integer> monsterEntry : monsters)
+		for (Map.Entry<FightCaveMonster, Integer> monsterEntry : monsters)
 		{
-			final WaveMonster monster = monsterEntry.getKey();
+			final FightCaveMonster monster = monsterEntry.getKey();
 			final int quantity = monsterEntry.getValue();
 			final LineComponent line = LineComponent.builder()
 				.left(FightCaveWavesPlugin.formatMonsterQuantity(monster, quantity))

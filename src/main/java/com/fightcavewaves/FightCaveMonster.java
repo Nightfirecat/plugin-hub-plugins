@@ -27,7 +27,7 @@ package com.fightcavewaves;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-enum WaveMonster
+enum FightCaveMonster
 {
 	TZ_KIH("Tz-Kih", 22),
 	TZ_KEK("Tz-Kek", 45),
