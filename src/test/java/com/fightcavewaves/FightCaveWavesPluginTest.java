@@ -25,25 +25,72 @@
 package com.fightcavewaves;
 
 import com.google.common.collect.ImmutableMap;
-import java.util.EnumMap;
+import com.google.inject.Guice;
+import com.google.inject.testing.fieldbinder.Bind;
+import com.google.inject.testing.fieldbinder.BoundFieldModule;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ScheduledExecutorService;
+import javax.inject.Inject;
+import net.runelite.api.ChatMessageType;
+import net.runelite.api.Client;
+import net.runelite.api.GameState;
+import net.runelite.api.events.ChatMessage;
+import net.runelite.api.events.GameStateChanged;
 import net.runelite.client.RuneLite;
 import net.runelite.client.externalplugins.ExternalPluginManager;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import static org.mockito.Mockito.when;
+import org.mockito.junit.MockitoJUnitRunner;
 
+@RunWith(MockitoJUnitRunner.class)
 public class FightCaveWavesPluginTest
 {
+	@Mock
+	@Bind
+	private Client client;
+
+	@Mock
+	@Bind
+	private FightCaveWavesConfig config;
+
+	@Mock
+	@Bind
+	private ScheduledExecutorService executor;
+
+	@Inject
+	private FightCaveWavesPlugin plugin;
+
+	private static final GameStateChanged LOGGED_IN = new GameStateChanged();
+
+	static
+	{
+		LOGGED_IN.setGameState(GameState.LOGGED_IN);
+	}
+
 	public static void main(String[] args) throws Exception
 	{
 		ExternalPluginManager.loadBuiltin(FightCaveWavesPlugin.class);
 		RuneLite.main(args);
 	}
 
+	@Before
+	public void before()
+	{
+		Guice.createInjector(BoundFieldModule.of(this)).injectMembers(this);
+	}
+
 	@Test
 	public void fightCaveWavesTest()
 	{
-		final List<EnumMap<FightCaveMonster, Integer>> waves = FightCaveWavesPlugin.getFIGHT_CAVE_WAVES();
+		final List<Map<WaveMonster, Integer>> waves = FightCaveWavesPlugin.getFIGHT_CAVE_WAVES();
 
 		assertEquals(FightCaveWavesPlugin.MAX_FIGHT_CAVE_WAVE, waves.size());
 
@@ -72,5 +119,130 @@ public class FightCaveWavesPluginTest
 		assertEquals(ImmutableMap.of(FightCaveMonster.KET_ZEK, 1, FightCaveMonster.YT_MEJKOT, 2), waves.get(60));
 		assertEquals(ImmutableMap.of(FightCaveMonster.KET_ZEK, 2), waves.get(61));
 		assertEquals(ImmutableMap.of(FightCaveMonster.TZKOK_JAD, 1), waves.get(62));
+	}
+
+	@Test
+	public void infernoWavesTest()
+	{
+		final List<Map<WaveMonster, Integer>> waves = FightCaveWavesPlugin.getINFERNO_WAVES();
+
+		assertEquals(FightCaveWavesPlugin.MAX_INFERNO_WAVE, waves.size());
+
+		assertEquals(ImmutableMap.of(InfernoMonster.JAL_NIB, 3, InfernoMonster.JAL_MEJRAH, 1), waves.get(0));
+		assertEquals(ImmutableMap.of(InfernoMonster.JAL_NIB, 3, InfernoMonster.JAL_MEJRAH, 2), waves.get(1));
+		assertEquals(ImmutableMap.of(InfernoMonster.JAL_NIB, 6), waves.get(2));
+		assertEquals(ImmutableMap.of(InfernoMonster.JAL_NIB, 3, InfernoMonster.JAL_AK, 1), waves.get(3));
+		assertEquals(ImmutableMap.of(InfernoMonster.JAL_NIB, 3, InfernoMonster.JAL_AK, 1, InfernoMonster.JAL_MEJRAH, 1), waves.get(4));
+		assertEquals(ImmutableMap.of(InfernoMonster.JAL_NIB, 3, InfernoMonster.JAL_AK, 1, InfernoMonster.JAL_MEJRAH, 2), waves.get(5));
+		assertEquals(ImmutableMap.of(InfernoMonster.JAL_NIB, 3, InfernoMonster.JAL_AK, 2), waves.get(6));
+		assertEquals(ImmutableMap.of(InfernoMonster.JAL_NIB, 6), waves.get(7));
+		assertEquals(ImmutableMap.of(InfernoMonster.JAL_NIB, 3, InfernoMonster.JAL_IMKOT, 1), waves.get(8));
+
+		assertEquals(ImmutableMap.of(InfernoMonster.JAL_NIB, 3, InfernoMonster.JAL_IMKOT, 2), waves.get(15));
+		assertEquals(ImmutableMap.of(InfernoMonster.JAL_NIB, 6), waves.get(16));
+		assertEquals(ImmutableMap.of(InfernoMonster.JAL_NIB, 3, InfernoMonster.JAL_XIL, 1), waves.get(17));
+
+		assertEquals(ImmutableMap.of(InfernoMonster.JAL_NIB, 3, InfernoMonster.JAL_XIL, 2), waves.get(32));
+		assertEquals(ImmutableMap.of(InfernoMonster.JAL_NIB, 6), waves.get(33));
+		assertEquals(ImmutableMap.of(InfernoMonster.JAL_NIB, 3, InfernoMonster.JAL_ZEK, 1), waves.get(34));
+
+		assertEquals(ImmutableMap.builder()
+			.put(InfernoMonster.JAL_NIB, 3)
+			.put(InfernoMonster.JAL_ZEK, 1)
+			.put(InfernoMonster.JAL_XIL, 1)
+			.put(InfernoMonster.JAL_IMKOT, 1)
+			.put(InfernoMonster.JAL_AK, 1)
+			.put(InfernoMonster.JAL_MEJRAH, 2)
+			.build(), waves.get(61));
+		assertEquals(ImmutableMap.builder()
+			.put(InfernoMonster.JAL_NIB, 3)
+			.put(InfernoMonster.JAL_ZEK, 1)
+			.put(InfernoMonster.JAL_XIL, 1)
+			.put(InfernoMonster.JAL_IMKOT, 1)
+			.put(InfernoMonster.JAL_AK, 2)
+			.build(), waves.get(62));
+		assertEquals(ImmutableMap.builder()
+			.put(InfernoMonster.JAL_NIB, 3)
+			.put(InfernoMonster.JAL_ZEK, 1)
+			.put(InfernoMonster.JAL_XIL, 1)
+			.put(InfernoMonster.JAL_IMKOT, 2)
+			.build(), waves.get(63));
+		assertEquals(ImmutableMap.builder()
+			.put(InfernoMonster.JAL_NIB, 3)
+			.put(InfernoMonster.JAL_ZEK, 1)
+			.put(InfernoMonster.JAL_XIL, 2)
+			.build(), waves.get(64));
+		assertEquals(ImmutableMap.builder()
+			.put(InfernoMonster.JAL_NIB, 3)
+			.put(InfernoMonster.JAL_ZEK, 2)
+			.build(), waves.get(65));
+		assertEquals(ImmutableMap.of(InfernoMonster.JALTOK_JAD, 1), waves.get(66));
+		assertEquals(ImmutableMap.of(InfernoMonster.JALTOK_JAD, 3), waves.get(67));
+		assertEquals(ImmutableMap.of(InfernoMonster.TZKAL_ZUK, 1), waves.get(68));
+	}
+
+	@Test
+	public void testLoginOutsideCaves()
+	{
+		plugin.onGameStateChanged(LOGGED_IN);
+
+		assertEquals(-1, plugin.getCurrentWave());
+		assertNull(plugin.getActiveWaves());
+	}
+
+	@Test
+	public void testLoginWithinFightCaves()
+	{
+		when(client.getMapRegions()).thenReturn(new int[]{ FightCaveWavesPlugin.FIGHT_CAVE_REGION });
+
+		plugin.onGameStateChanged(LOGGED_IN);
+
+		assertEquals(-1, plugin.getCurrentWave());
+		assertNull(plugin.getActiveWaves());
+	}
+
+	@Test
+	public void testLoginWithinInferno()
+	{
+		when(client.getMapRegions()).thenReturn(new int[]{ FightCaveWavesPlugin.INFERNO_REGION});
+
+		plugin.onGameStateChanged(LOGGED_IN);
+
+		assertEquals(-1, plugin.getCurrentWave());
+		assertNull(plugin.getActiveWaves());
+	}
+
+	@Test
+	public void testFightCavesWaveOne()
+	{
+		when(client.getMapRegions()).thenReturn(new int[]{ FightCaveWavesPlugin.FIGHT_CAVE_REGION });
+
+		plugin.onChatMessage(new ChatMessage(null, ChatMessageType.GAMEMESSAGE, "", "<col=ef1020>Wave: 1</col>", "", 0));
+
+		assertEquals(1, plugin.getCurrentWave());
+		assertEquals(FightCaveWavesPlugin.FIGHT_CAVE_WAVES, plugin.getActiveWaves());
+	}
+
+	@Test
+	public void testInfernoWaveOne()
+	{
+		when(client.getMapRegions()).thenReturn(new int[]{ FightCaveWavesPlugin.INFERNO_REGION});
+
+		plugin.onChatMessage(new ChatMessage(null, ChatMessageType.GAMEMESSAGE, "", "<col=ef1020>Wave: 1</col>", "", 0));
+
+		assertEquals(1, plugin.getCurrentWave());
+		assertEquals(FightCaveWavesPlugin.INFERNO_WAVES, plugin.getActiveWaves());
+	}
+
+	@Test
+	public void testInfernoWaveComplete()
+	{
+		when(client.getMapRegions()).thenReturn(new int[]{ FightCaveWavesPlugin.INFERNO_REGION});
+
+		plugin.onChatMessage(new ChatMessage(null, ChatMessageType.GAMEMESSAGE, "", "<col=ef1020>Wave: 1</col>", "", 0));
+		plugin.onChatMessage(new ChatMessage(null, ChatMessageType.GAMEMESSAGE, "", "Wave complete!", "", 0));
+
+		assertEquals(2, plugin.getCurrentWave());
+		assertEquals(FightCaveWavesPlugin.INFERNO_WAVES, plugin.getActiveWaves());
 	}
 }

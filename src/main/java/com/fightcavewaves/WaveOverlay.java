@@ -29,6 +29,7 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
@@ -59,30 +60,33 @@ class WaveOverlay extends Overlay
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-		if (!plugin.inFightCave()
-			|| plugin.getCurrentWave() < 0)
+		final List<Map<WaveMonster, Integer>> activeWaves = plugin.getActiveWaves();
+		final int currentWave = plugin.getCurrentWave();
+
+		if (!(plugin.inFightCave() || plugin.inInferno())
+			|| currentWave < 0
+			|| activeWaves == null)
 		{
 			return null;
 		}
 
 		panelComponent.getChildren().clear();
 
-		final int currentWave = plugin.getCurrentWave();
 		final int waveIndex = currentWave - 1;
 
 		if (config.waveDisplay() == WaveDisplayMode.CURRENT
 			|| config.waveDisplay() == WaveDisplayMode.BOTH)
 		{
-			final Map<FightCaveMonster, Integer> waveContents = FightCaveWavesPlugin.getFIGHT_CAVE_WAVES().get(waveIndex);
+			final Map<WaveMonster, Integer> waveContents = activeWaves.get(waveIndex);
 
 			addWaveInfo("Wave " + plugin.getCurrentWave(), waveContents);
 		}
 
 		if ((config.waveDisplay() == WaveDisplayMode.NEXT
 			|| config.waveDisplay() == WaveDisplayMode.BOTH)
-			&& currentWave != FightCaveWavesPlugin.MAX_FIGHT_CAVE_WAVE)
+			&& currentWave < activeWaves.size())
 		{
-			final Map<FightCaveMonster, Integer> waveContents = FightCaveWavesPlugin.getFIGHT_CAVE_WAVES().get(waveIndex + 1);
+			final Map<WaveMonster, Integer> waveContents = activeWaves.get(waveIndex + 1);
 
 			addWaveInfo("Next wave", waveContents);
 		}
@@ -90,7 +94,7 @@ class WaveOverlay extends Overlay
 		return panelComponent.render(graphics);
 	}
 
-	private void addWaveInfo(final String headerText, final Map<FightCaveMonster, Integer> waveContents)
+	private void addWaveInfo(final String headerText, final Map<WaveMonster, Integer> waveContents)
 	{
 		panelComponent.getChildren().add(TitleComponent.builder()
 			.text(headerText)
@@ -103,15 +107,15 @@ class WaveOverlay extends Overlay
 		}
 	}
 
-	private static Collection<LineComponent> buildWaveLines(final Map<FightCaveMonster, Integer> wave)
+	private static Collection<LineComponent> buildWaveLines(final Map<WaveMonster, Integer> wave)
 	{
-		final List<Map.Entry<FightCaveMonster, Integer>> monsters = new ArrayList<>(wave.entrySet());
-		monsters.sort(Map.Entry.comparingByKey());
+		final List<Map.Entry<WaveMonster, Integer>> monsters = new ArrayList<>(wave.entrySet());
+		monsters.sort(Comparator.comparingInt(entry -> entry.getKey().getLevel()));
 		final List<LineComponent> outputLines = new ArrayList<>();
 
-		for (Map.Entry<FightCaveMonster, Integer> monsterEntry : monsters)
+		for (Map.Entry<WaveMonster, Integer> monsterEntry : monsters)
 		{
-			final FightCaveMonster monster = monsterEntry.getKey();
+			final WaveMonster monster = monsterEntry.getKey();
 			final int quantity = monsterEntry.getValue();
 			final LineComponent line = LineComponent.builder()
 				.left(FightCaveWavesPlugin.formatMonsterQuantity(monster, quantity))

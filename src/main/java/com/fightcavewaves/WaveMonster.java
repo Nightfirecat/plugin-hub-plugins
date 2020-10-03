@@ -24,31 +24,9 @@
  */
 package com.fightcavewaves;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-@AllArgsConstructor
-@Getter
-enum FightCaveMonster implements WaveMonster
+interface WaveMonster
 {
-	TZ_KIH("Tz-Kih", 22),
-	TZ_KEK("Tz-Kek", 45),
-	TOK_XIL("Tok-Xil", 90),
-	YT_MEJKOT("Yt-MejKot", 180),
-	KET_ZEK("Ket-Zek", 360),
-	TZKOK_JAD("TzTok-Jad", 702);
-
-	private final String name;
-	private final int level;
-
-	public int getCountPerSpawn()
-	{
-		return 1;
-	}
-
-	@Override
-	public String toString()
-	{
-		return String.format("%s - Level %s", getName(), getLevel());
-	}
+	String getName();
+	int getLevel();
+	int getCountPerSpawn();
 }

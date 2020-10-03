@@ -29,26 +29,29 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-enum FightCaveMonster implements WaveMonster
+public enum InfernoMonster implements WaveMonster
 {
-	TZ_KIH("Tz-Kih", 22),
-	TZ_KEK("Tz-Kek", 45),
-	TOK_XIL("Tok-Xil", 90),
-	YT_MEJKOT("Yt-MejKot", 180),
-	KET_ZEK("Ket-Zek", 360),
-	TZKOK_JAD("TzTok-Jad", 702);
+	JAL_NIB("Jal-Nib", 32, 3),
+	JAL_MEJRAH("Jal-MejRah", 85),
+	JAL_AK("Jal-Ak", 165),
+	JAL_IMKOT("Jal-ImKot", 240),
+	JAL_XIL("Jal-Xil", 370),
+	JAL_ZEK("Jal-Zek", 490),
+	JALTOK_JAD("JalTok-Jad", 900),
+	TZKAL_ZUK("TzKal-Zuk", 1400);
 
 	private final String name;
 	private final int level;
+	private final int countPerSpawn;
 
-	public int getCountPerSpawn()
+	InfernoMonster(final String name, final int level)
 	{
-		return 1;
+		this(name, level, 1);
 	}
 
 	@Override
 	public String toString()
-	{
-		return String.format("%s - Level %s", getName(), getLevel());
-	}
+{
+	return String.format("%s - Level %s", getName(), getLevel());
+}
 }
