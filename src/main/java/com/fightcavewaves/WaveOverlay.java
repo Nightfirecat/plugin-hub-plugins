@@ -34,20 +34,17 @@ import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import net.runelite.client.ui.ColorScheme;
-import net.runelite.client.ui.overlay.Overlay;
+import net.runelite.client.ui.overlay.OverlayPanel;
 import net.runelite.client.ui.overlay.OverlayPosition;
 import net.runelite.client.ui.overlay.components.LineComponent;
-import net.runelite.client.ui.overlay.components.PanelComponent;
 import net.runelite.client.ui.overlay.components.TitleComponent;
 
-class WaveOverlay extends Overlay
+class WaveOverlay extends OverlayPanel
 {
 	private static final Color HEADER_COLOR = ColorScheme.BRAND_ORANGE;
 
 	private final FightCaveWavesConfig config;
 	private final FightCaveWavesPlugin plugin;
-
-	private final PanelComponent panelComponent = new PanelComponent();
 
 	@Inject
 	private WaveOverlay(FightCaveWavesConfig config, FightCaveWavesPlugin plugin)
@@ -91,7 +88,7 @@ class WaveOverlay extends Overlay
 			addWaveInfo("Next wave", waveContents);
 		}
 
-		return panelComponent.render(graphics);
+		return super.render(graphics);
 	}
 
 	private void addWaveInfo(final String headerText, final Map<WaveMonster, Integer> waveContents)
