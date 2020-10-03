@@ -22,11 +22,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.fightcavewaves;
+package at.nightfirec.fightcavewaves;
 
-interface WaveMonster
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public enum WaveDisplayMode
 {
-	String getName();
-	int getLevel();
-	int getCountPerSpawn();
+	CURRENT("Current wave"),
+	NEXT("Next wave"),
+	BOTH("Both");
+
+	private final String name;
+
+	@Override
+	public String toString()
+	{
+		return name;
+	}
 }

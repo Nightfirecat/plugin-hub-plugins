@@ -22,36 +22,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.fightcavewaves;
+package at.nightfirec.fightcavewaves;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import net.runelite.client.config.Config;
+import net.runelite.client.config.ConfigGroup;
+import net.runelite.client.config.ConfigItem;
 
-@AllArgsConstructor
-@Getter
-public enum InfernoMonster implements WaveMonster
+@ConfigGroup("fightcavewaves")
+public interface FightCaveWavesConfig extends Config
 {
-	JAL_NIB("Jal-Nib", 32, 3),
-	JAL_MEJRAH("Jal-MejRah", 85),
-	JAL_AK("Jal-Ak", 165),
-	JAL_IMKOT("Jal-ImKot", 240),
-	JAL_XIL("Jal-Xil", 370),
-	JAL_ZEK("Jal-Zek", 490),
-	JALTOK_JAD("JalTok-Jad", 900),
-	TZKAL_ZUK("TzKal-Zuk", 1400);
-
-	private final String name;
-	private final int level;
-	private final int countPerSpawn;
-
-	InfernoMonster(final String name, final int level)
+	@ConfigItem(
+		keyName = "waveDisplay",
+		name = "Wave display",
+		description = "Shows monsters that will spawn on the selected wave(s)."
+	)
+	default WaveDisplayMode waveDisplay()
 	{
-		this(name, level, 1);
+		return WaveDisplayMode.BOTH;
 	}
-
-	@Override
-	public String toString()
-{
-	return String.format("%s - Level %s", getName(), getLevel());
-}
 }
