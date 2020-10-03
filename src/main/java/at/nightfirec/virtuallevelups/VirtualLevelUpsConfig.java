@@ -22,27 +22,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.virtuallevelups;
+package at.nightfirec.virtuallevelups;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import net.runelite.client.config.Config;
+import net.runelite.client.config.ConfigGroup;
+import net.runelite.client.config.ConfigItem;
 
-@AllArgsConstructor
-@Getter
-public enum LevelUpFireworks
+@ConfigGroup("virtuallevelups")
+public interface VirtualLevelUpsConfig extends Config
 {
-	NONE("None", -1),
-	NORMAL("Normal", 199),
-	NINETY_NINE("99", 1388),
-	MAX_TOTAL("Max total", 1389),
-	;
-
-	private final String name;
-	private final int graphicId;
-
-	@Override
-	public String toString()
+	@ConfigItem(
+		keyName = "takeScreenshots",
+		name = "Take screenshots",
+		description = "Capture a screenshot of the client (similar to the Screenshot plugin) when reaching a new virtual level"
+	)
+	default boolean takeScreenshots()
 	{
-		return getName();
+		return true;
+	}
+
+	@ConfigItem(
+		keyName = "showFireworks",
+		name = "Level-up fireworks style",
+		description = "Type of fireworks which will be triggered when reaching a new virtual level"
+	)
+	default LevelUpFireworks showFireworks()
+	{
+		return LevelUpFireworks.NINETY_NINE;
 	}
 }

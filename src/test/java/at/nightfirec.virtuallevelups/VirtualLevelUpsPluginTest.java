@@ -1,4 +1,4 @@
-package com.virtuallevelups;
+package at.nightfirec.virtuallevelups;
 
 import net.runelite.client.RuneLite;
 import net.runelite.client.externalplugins.ExternalPluginManager;
