@@ -25,6 +25,7 @@
  */
 package at.nightfirec.virtuallevelups;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Provides;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -116,6 +117,8 @@ public class VirtualLevelUpsPlugin extends Plugin
 	private BufferedImage reportButton;
 
 	private final Map<Skill, Integer> previousXpMap = new EnumMap<>(Skill.class);
+	@VisibleForTesting
+	@Getter(AccessLevel.PACKAGE)
 	private final List<Skill> skillsLeveledUp = new ArrayList<>();
 
 	private VirtualLevelUpsInterfaceInput input;
