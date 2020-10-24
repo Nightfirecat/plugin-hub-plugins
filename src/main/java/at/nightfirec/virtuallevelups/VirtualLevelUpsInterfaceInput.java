@@ -69,7 +69,8 @@ class VirtualLevelUpsInterfaceInput extends ChatboxInput implements KeyListener
 		final Widget chatboxContainer = plugin.getChatboxPanelManager().getContainerWidget();
 
 		final String skillName = skill.getName();
-		final int skillLevel = Experience.getLevelForXp(plugin.getClient().getSkillExperience(skill));
+		final int skillExperience = plugin.getClient().getSkillExperience(skill);
+		final int skillLevel = Experience.getLevelForXp(skillExperience);
 		final List<SkillModel> skillModels = SkillModel.getSKILL_MODELS(skill);
 		final String prefix = (skill == Skill.AGILITY || skill == Skill.ATTACK) ? "an " : "a ";
 
@@ -77,7 +78,16 @@ class VirtualLevelUpsInterfaceInput extends ChatboxInput implements KeyListener
 		final Widget levelUpText = chatboxContainer.createChild(-1, WidgetType.TEXT);
 		final Widget levelUpContinue = chatboxContainer.createChild(-1, WidgetType.TEXT);
 
-		levelUpLevel.setText("Congratulations, you just advanced " + prefix + skillName + " level.");
+		final String levelUpLevelString;
+		if (skillExperience == Experience.MAX_SKILL_XP)
+		{
+			levelUpLevelString = "Congratulations, you just maxed your " + skillName + " skill.";
+		}
+		else
+		{
+			levelUpLevelString = "Congratulations, you just advanced " + prefix + skillName + " level.";
+		}
+		levelUpLevel.setText(levelUpLevelString);
 		levelUpLevel.setTextColor(Color.BLACK.getRGB());
 		levelUpLevel.setFontId(FontID.QUILL_8);
 		levelUpLevel.setXPositionMode(WidgetPositionMode.ABSOLUTE_TOP);
@@ -91,9 +101,19 @@ class VirtualLevelUpsInterfaceInput extends ChatboxInput implements KeyListener
 		levelUpLevel.setWidthMode(WidgetSizeMode.ABSOLUTE);
 		levelUpLevel.revalidate();
 
-		levelUpText.setText((skill == Skill.HITPOINTS
-			? "Your Hitpoints are now " + skillLevel
-			: "Your " + skillName + " level is now " + skillLevel) + '.');
+		final String levelUpTextString;
+		if (skillExperience == Experience.MAX_SKILL_XP)
+		{
+			levelUpTextString = "You have reached maximum experience in " + skillName;
+		}
+		else
+		{
+			levelUpTextString = (skill == Skill.HITPOINTS
+				? "Your Hitpoints are now " + skillLevel
+				: "Your " + skillName + " level is now " + skillLevel)
+				+ '.';
+		}
+		levelUpText.setText(levelUpTextString);
 		levelUpText.setFontId(FontID.QUILL_8);
 		levelUpText.setXPositionMode(WidgetPositionMode.ABSOLUTE_TOP);
 		levelUpText.setOriginalX(73 + X_OFFSET);

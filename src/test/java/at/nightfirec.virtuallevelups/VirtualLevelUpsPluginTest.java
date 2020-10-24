@@ -156,6 +156,16 @@ public class VirtualLevelUpsPluginTest
 		assertTrue(plugin.getSkillsLeveledUp().isEmpty());
 	}
 
+	@Test
+	public void textMaxXp()
+	{
+		final int level = MAX_VIRT_LEVEL;
+		statChanged(SKILL, MAX_SKILL_XP - 1, level);
+		statChanged(SKILL, MAX_SKILL_XP, level);
+
+		assertTrue(plugin.getSkillsLeveledUp().contains(SKILL));
+	}
+
 	private void statChanged(final Skill skill, final int xp, final int level)
 	{
 		when(client.getSkillExperience(skill)).thenReturn(xp);

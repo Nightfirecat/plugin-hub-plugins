@@ -171,7 +171,7 @@ public class VirtualLevelUpsPlugin extends Plugin
 
 		previousXpMap.put(skill, xpAfter);
 
-		if (xpBefore == -1 || levelAfter < 100 || levelBefore >= levelAfter)
+		if (xpAfter != Experience.MAX_SKILL_XP && (xpBefore == -1 || levelAfter <= Experience.MAX_REAL_LEVEL || levelBefore >= levelAfter))
 		{
 			return;
 		}
