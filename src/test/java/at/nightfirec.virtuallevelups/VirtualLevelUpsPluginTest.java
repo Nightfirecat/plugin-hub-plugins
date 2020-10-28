@@ -45,6 +45,7 @@ import net.runelite.client.game.chatbox.ChatboxPanelManager;
 import net.runelite.client.ui.ClientUI;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ImageCapture;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
@@ -166,9 +167,23 @@ public class VirtualLevelUpsPluginTest
 		assertTrue(plugin.getSkillsLeveledUp().contains(SKILL));
 	}
 
+	@Test
+	public void testSkillBoostAtMaxXp()
+	{
+		statChanged(SKILL, MAX_SKILL_XP, MAX_VIRT_LEVEL);
+		statChanged(SKILL, MAX_SKILL_XP, MAX_VIRT_LEVEL, MAX_VIRT_LEVEL + 1);
+
+		assertEquals(1, plugin.getSkillsLeveledUp().size());
+	}
+
 	private void statChanged(final Skill skill, final int xp, final int level)
 	{
+		statChanged(skill, xp, level, level);
+	}
+
+	private void statChanged(final Skill skill, final int xp, final int level, final int boostedLevel)
+	{
 		when(client.getSkillExperience(skill)).thenReturn(xp);
-		plugin.onStatChanged(new StatChanged(SKILL, xp, level, level));
+		plugin.onStatChanged(new StatChanged(SKILL, xp, level, boostedLevel));
 	}
 }
