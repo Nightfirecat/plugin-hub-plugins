@@ -230,7 +230,19 @@ public class VirtualLevelUpsPlugin extends Plugin
 			return;
 		}
 
-		final String fileName = skill.getName() + '(' + Experience.getLevelForXp(client.getSkillExperience(skill)) + ')';
+		final int skillExperience = client.getSkillExperience(skill);
+
+		final String skillLevel;
+		if (skillExperience == Experience.MAX_SKILL_XP)
+		{
+			skillLevel = "MAX_EXP";
+		}
+		else
+		{
+			skillLevel = Experience.getLevelForXp(skillExperience) + "";
+		}
+
+		final String fileName = skill.getName() + '(' + skillLevel + ')';
 		final String subDir = "Levels";
 
 		Consumer<Image> imageCallback = (img) ->
