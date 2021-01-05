@@ -184,6 +184,6 @@ public class VirtualLevelUpsPluginTest
 	private void statChanged(final Skill skill, final int xp, final int level, final int boostedLevel)
 	{
 		when(client.getSkillExperience(skill)).thenReturn(xp);
-		plugin.onStatChanged(new StatChanged(SKILL, xp, level, boostedLevel));
+		plugin.onStatChanged(new StatChanged(skill, xp, level, boostedLevel));
 	}
 }
