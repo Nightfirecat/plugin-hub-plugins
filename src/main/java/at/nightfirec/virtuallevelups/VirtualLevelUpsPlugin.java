@@ -155,7 +155,14 @@ public class VirtualLevelUpsPlugin extends Plugin
 	@Subscribe
 	public void onGameStateChanged(GameStateChanged event)
 	{
-		previousXpMap.clear();
+		switch(event.getGameState())
+		{
+			case LOGIN_SCREEN:
+			case HOPPING:
+			case LOGGING_IN:
+			case LOGIN_SCREEN_AUTHENTICATOR:
+				previousXpMap.clear();
+		}
 	}
 
 	@Subscribe
@@ -171,8 +178,14 @@ public class VirtualLevelUpsPlugin extends Plugin
 
 		previousXpMap.put(skill, xpAfter);
 
-		if ((xpBefore == Experience.MAX_SKILL_XP || xpAfter != Experience.MAX_SKILL_XP) &&
-			(xpBefore == -1 || levelAfter <= Experience.MAX_REAL_LEVEL || levelBefore >= levelAfter))
+		// Do not proceed if any of the following are true:
+		//  * xpBefore == -1               (don't fire when first setting new known value)
+		//  * xpBefore >= xpAfter          (do not allow 200m -> 200m exp drops)
+		//  * levelAfter <= MAX_REAL_LEVEL (we don't care about real level ups)
+		//    * xpAfter != 200m _and_      (unless we're reaching 200m exp for the first time...)
+		//    * levelBefore >= levelAfter  (stop if if we're not actually reaching a virtual level)
+		if (xpBefore == -1 || levelAfter <= Experience.MAX_REAL_LEVEL || xpAfter <= xpBefore
+			|| (xpAfter != Experience.MAX_SKILL_XP && levelBefore >= levelAfter))
 		{
 			return;
 		}
