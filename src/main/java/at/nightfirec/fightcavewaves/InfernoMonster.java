@@ -29,29 +29,24 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum InfernoMonster implements WaveMonster
+enum InfernoMonster implements WaveMonster
 {
-	JAL_NIB("Jal-Nib", 32, 3),
-	JAL_MEJRAH("Jal-MejRah", 85),
-	JAL_AK("Jal-Ak", 165),
-	JAL_IMKOT("Jal-ImKot", 240),
-	JAL_XIL("Jal-Xil", 370),
-	JAL_ZEK("Jal-Zek", 490),
-	JALTOK_JAD("JalTok-Jad", 900),
-	TZKAL_ZUK("TzKal-Zuk", 1400);
+	JAL_NIB("Jal-Nib", WaveMonsterType.NIBBLER, 32, 3),
+	JAL_MEJRAH("Jal-MejRah", WaveMonsterType.BAT, 85),
+	JAL_AK("Jal-Ak", WaveMonsterType.BLOB, 165),
+	JAL_IMKOT("Jal-ImKot", WaveMonsterType.MELEE, 240),
+	JAL_XIL("Jal-Xil", WaveMonsterType.RANGER, 370),
+	JAL_ZEK("Jal-Zek", WaveMonsterType.MAGE, 490),
+	JALTOK_JAD("JalTok-Jad", WaveMonsterType.JAD, 900),
+	TZKAL_ZUK("TzKal-Zuk", WaveMonsterType.ZUK, 1400);
 
 	private final String name;
+	private final WaveMonsterType type;
 	private final int level;
 	private final int countPerSpawn;
 
-	InfernoMonster(final String name, final int level)
+	InfernoMonster(final String name, final WaveMonsterType type, final int level)
 	{
-		this(name, level, 1);
+		this(name, type, level, 1);
 	}
-
-	@Override
-	public String toString()
-{
-	return String.format("%s - Level %s", getName(), getLevel());
-}
 }

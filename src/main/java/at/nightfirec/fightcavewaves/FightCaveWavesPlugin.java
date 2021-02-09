@@ -180,9 +180,9 @@ public class FightCaveWavesPlugin extends Plugin
 		activeWaves = null;
 	}
 
-	static String formatMonsterQuantity(final WaveMonster monster, final int quantity)
+	static String formatMonsterQuantity(final WaveMonster monster, final int quantity, final boolean commonNames, final boolean showMonsterLevel)
 	{
-		return String.format("%dx %s", quantity, monster);
+		return String.format("%dx %s", quantity, monster.displayString(commonNames, showMonsterLevel));
 	}
 
 	private static void initializeFightCaveMonsters()

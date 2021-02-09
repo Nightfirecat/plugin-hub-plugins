@@ -38,7 +38,9 @@ import net.runelite.api.GameState;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.client.RuneLite;
+import net.runelite.client.config.ConfigManager;
 import net.runelite.client.externalplugins.ExternalPluginManager;
+import net.runelite.client.ui.overlay.OverlayManager;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
@@ -64,6 +66,14 @@ public class FightCaveWavesPluginTest
 	@Mock
 	@Bind
 	private ScheduledExecutorService executor;
+
+	@Mock
+	@Bind
+	private ConfigManager configManager;
+
+	@Mock
+	@Bind
+	private OverlayManager overlayManager;
 
 	@Inject
 	private FightCaveWavesPlugin plugin;
@@ -118,7 +128,7 @@ public class FightCaveWavesPluginTest
 		assertEquals(ImmutableMap.of(FightCaveMonster.KET_ZEK, 1, FightCaveMonster.YT_MEJKOT, 1, FightCaveMonster.TOK_XIL, 2), waves.get(59));
 		assertEquals(ImmutableMap.of(FightCaveMonster.KET_ZEK, 1, FightCaveMonster.YT_MEJKOT, 2), waves.get(60));
 		assertEquals(ImmutableMap.of(FightCaveMonster.KET_ZEK, 2), waves.get(61));
-		assertEquals(ImmutableMap.of(FightCaveMonster.TZKOK_JAD, 1), waves.get(62));
+		assertEquals(ImmutableMap.of(FightCaveMonster.TZTOK_JAD, 1), waves.get(62));
 	}
 
 	@Test
@@ -244,5 +254,15 @@ public class FightCaveWavesPluginTest
 
 		assertEquals(2, plugin.getCurrentWave());
 		assertEquals(FightCaveWavesPlugin.INFERNO_WAVES, plugin.getActiveWaves());
+	}
+
+	@Test
+	public void testWaveMonsterDisplayString()
+	{
+		assertEquals("Bat", FightCaveMonster.TZ_KIH.displayString(true, false));
+		assertEquals("Nibbler", InfernoMonster.JAL_NIB.displayString(true, false));
+		assertEquals("Zuk - Level 1400", InfernoMonster.TZKAL_ZUK.displayString(true, true));
+		assertEquals("TzTok-Jad", FightCaveMonster.TZTOK_JAD.displayString(false, false));
+		assertEquals("JalTok-Jad - Level 900", InfernoMonster.JALTOK_JAD.displayString(false, true));
 	}
 }

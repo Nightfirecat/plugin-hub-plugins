@@ -24,40 +24,17 @@
  */
 package at.nightfirec.fightcavewaves;
 
-import net.runelite.client.config.Config;
-import net.runelite.client.config.ConfigGroup;
-import net.runelite.client.config.ConfigItem;
-
-@ConfigGroup("fightcavewaves")
-public interface FightCaveWavesConfig extends Config
+/**
+ * Monster "types" within TzHaar wave-based minigames.
+ */
+enum WaveMonsterType
 {
-	@ConfigItem(
-		keyName = "waveDisplay",
-		name = "Wave display",
-		description = "Shows monsters that will spawn on the selected wave(s)."
-	)
-	default WaveDisplayMode waveDisplay()
-	{
-		return WaveDisplayMode.BOTH;
-	}
-
-	@ConfigItem(
-		keyName = "commonNames",
-		name = "Use common names",
-		description = "Display common names for TzHaar wave monsters, e.g. 'Nibbler', 'Bat', 'Mage'"
-	)
-	default boolean commonNames()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-		keyName = "showMonsterLevel",
-		name = "Show monster level",
-		description = "Show the level of the monster"
-	)
-	default boolean showMonsterLevel()
-	{
-		return true;
-	}
+	NIBBLER,
+	BAT,
+	BLOB,
+	RANGER,
+	MELEE,
+	MAGE,
+	JAD,
+	ZUK,
 }

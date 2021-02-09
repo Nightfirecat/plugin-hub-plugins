@@ -104,7 +104,7 @@ class WaveOverlay extends OverlayPanel
 		}
 	}
 
-	private static Collection<LineComponent> buildWaveLines(final Map<WaveMonster, Integer> wave)
+	private Collection<LineComponent> buildWaveLines(final Map<WaveMonster, Integer> wave)
 	{
 		final List<Map.Entry<WaveMonster, Integer>> monsters = new ArrayList<>(wave.entrySet());
 		monsters.sort(Comparator.comparingInt(entry -> entry.getKey().getLevel()));
@@ -115,7 +115,7 @@ class WaveOverlay extends OverlayPanel
 			final WaveMonster monster = monsterEntry.getKey();
 			final int quantity = monsterEntry.getValue();
 			final LineComponent line = LineComponent.builder()
-				.left(FightCaveWavesPlugin.formatMonsterQuantity(monster, quantity))
+				.left(FightCaveWavesPlugin.formatMonsterQuantity(monster, quantity, config.commonNames(), config.showMonsterLevel()))
 				.build();
 
 			outputLines.add(line);
