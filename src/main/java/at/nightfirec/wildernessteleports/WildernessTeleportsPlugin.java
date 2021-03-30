@@ -149,6 +149,13 @@ public class WildernessTeleportsPlugin extends Plugin
 		{
 			gameStateChangeVarbitRace = true;
 		}
+
+		// Item container can change before login state (say, during disconnections), so check for glories after we're
+		// logged back in.
+		if (state == GameState.LOGGED_IN)
+		{
+			checkChargedGlories();
+		}
 	}
 
 	@Subscribe
