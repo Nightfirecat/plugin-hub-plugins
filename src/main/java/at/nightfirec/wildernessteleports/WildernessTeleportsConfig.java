@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, Jordan <nightfirecat@protonmail.com>
+ * Copyright (c) 2020, Jordan <nightfirecat@protonmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,46 +22,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package at.nightfirec.placeholder;
+package at.nightfirec.wildernessteleports;
 
-import com.google.inject.Provides;
-import javax.inject.Inject;
-import net.runelite.client.config.ConfigManager;
-import net.runelite.client.plugins.Plugin;
-import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.ui.overlay.OverlayManager;
+import net.runelite.client.config.Config;
+import net.runelite.client.config.ConfigGroup;
+import net.runelite.client.config.ConfigItem;
 
-@PluginDescriptor(
-	name = "Placeholder",
-	description = "Placeholder",
-	tags = {}
-)
-public class PlaceholderPlugin extends Plugin
+@ConfigGroup("wildernessteleports")
+public interface WildernessTeleportsConfig extends Config
 {
-	@Inject
-	private PlaceholderConfig config;
-
-	@Inject
-	private PlaceholderOverlay overlay;
-
-	@Inject
-	private OverlayManager overlayManager;
-
-	@Provides
-	PlaceholderConfig getConfig(ConfigManager configManager)
-	{
-		return configManager.getConfig(PlaceholderConfig.class);
-	}
-
-	@Override
-	public void startUp()
-	{
-		overlayManager.add(overlay);
-	}
-
-	@Override
-	public void shutDown()
-	{
-		overlayManager.remove(overlay);
-	}
 }

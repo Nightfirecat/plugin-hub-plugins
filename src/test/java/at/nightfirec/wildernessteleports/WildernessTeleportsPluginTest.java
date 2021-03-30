@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, Jordan <nightfirecat@protonmail.com>
+ * Copyright (c) 2021, Jordan <nightfirecat@protonmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,13 +22,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package at.nightfirec.placeholder;
+package at.nightfirec.wildernessteleports;
 
-import net.runelite.client.config.Config;
-import net.runelite.client.config.ConfigGroup;
-import net.runelite.client.config.ConfigItem;
+import net.runelite.client.RuneLite;
+import net.runelite.client.externalplugins.ExternalPluginManager;
 
-@ConfigGroup("placeholder")
-public interface PlaceholderConfig extends Config
+public class WildernessTeleportsPluginTest
 {
+	public static void main(String[] args) throws Exception
+	{
+		ExternalPluginManager.loadBuiltin(WildernessTeleportsPlugin.class);
+		RuneLite.main(args);
+	}
 }

@@ -22,16 +22,46 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package at.nightfirec.placeholder;
+package at.nightfirec.wildernessteleports;
 
-import net.runelite.client.RuneLite;
-import net.runelite.client.externalplugins.ExternalPluginManager;
+import com.google.inject.Provides;
+import javax.inject.Inject;
+import net.runelite.client.config.ConfigManager;
+import net.runelite.client.plugins.Plugin;
+import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.ui.overlay.OverlayManager;
 
-public class PlaceholderPluginTest
+@PluginDescriptor(
+	name = "Uncharged Glory Warning",
+	description = "Warns you if you enter the wilderness with uncharged amulets of glory",
+	tags = {"amulet","glory","wilderness","20","30","tele","teleport"}
+)
+public class WildernessTeleportsPlugin extends Plugin
 {
-	public static void main(String[] args) throws Exception
+	@Inject
+	private WildernessTeleportsConfig config;
+
+	@Inject
+	private WildernessTeleportsOverlay overlay;
+
+	@Inject
+	private OverlayManager overlayManager;
+
+	@Provides
+	WildernessTeleportsConfig getConfig(ConfigManager configManager)
 	{
-		ExternalPluginManager.loadBuiltin(PlaceholderPlugin.class);
-		RuneLite.main(args);
+		return configManager.getConfig(WildernessTeleportsConfig.class);
+	}
+
+	@Override
+	public void startUp()
+	{
+		overlayManager.add(overlay);
+	}
+
+	@Override
+	public void shutDown()
+	{
+		overlayManager.remove(overlay);
 	}
 }

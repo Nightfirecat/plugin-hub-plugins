@@ -25,7 +25,7 @@ dependencies {
 //	testImplementation 'com.google.inject.extensions:guice-testlib:4.1.0'
 }
 
-group = 'at.nightfirec.placeholder'
+group = 'at.nightfirec.wildernessteleports'
 version = '1.0-SNAPSHOT'
 sourceCompatibility = '1.8'
 
