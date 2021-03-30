@@ -24,9 +24,27 @@
  */
 package at.nightfirec.wildernessteleports;
 
+import com.google.common.collect.ImmutableList;
 import com.google.inject.Provides;
+import java.util.List;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.experimental.Accessors;
+import net.runelite.api.Client;
+import net.runelite.api.GameState;
+import net.runelite.api.InventoryID;
+import net.runelite.api.ItemContainer;
+import net.runelite.api.ItemID;
+import net.runelite.api.Varbits;
+import net.runelite.api.events.GameStateChanged;
+import net.runelite.api.events.GameTick;
+import net.runelite.api.events.ItemContainerChanged;
+import net.runelite.api.events.VarbitChanged;
+import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
+import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
@@ -38,6 +56,28 @@ import net.runelite.client.ui.overlay.OverlayManager;
 )
 public class WildernessTeleportsPlugin extends Plugin
 {
+	private static final List<Integer> CHARGED_GLORY_IDS = ImmutableList.of(
+		ItemID.AMULET_OF_ETERNAL_GLORY,
+		ItemID.AMULET_OF_GLORY1,
+		ItemID.AMULET_OF_GLORY2,
+		ItemID.AMULET_OF_GLORY3,
+		ItemID.AMULET_OF_GLORY4,
+		ItemID.AMULET_OF_GLORY5,
+		ItemID.AMULET_OF_GLORY6,
+		ItemID.AMULET_OF_GLORY_T1,
+		ItemID.AMULET_OF_GLORY_T2,
+		ItemID.AMULET_OF_GLORY_T3,
+		ItemID.AMULET_OF_GLORY_T4,
+		ItemID.AMULET_OF_GLORY_T5,
+		ItemID.AMULET_OF_GLORY_T6
+	);
+	private static final List<Integer> UNCHARGED_GLORY_IDS = ImmutableList.of(
+		ItemID.AMULET_OF_GLORY,
+		ItemID.AMULET_OF_GLORY_T,
+		ItemID.AMULET_OF_GLORY_8283, // mounted glory interface item
+		ItemID.AMULET_OF_GLORY_20586 // LMS glory
+	);
+
 	@Inject
 	private WildernessTeleportsConfig config;
 
@@ -46,6 +86,21 @@ public class WildernessTeleportsPlugin extends Plugin
 
 	@Inject
 	private OverlayManager overlayManager;
+
+	@Inject
+	private Client client;
+
+	@Inject
+	private ClientThread clientThread;
+
+	@Getter(AccessLevel.PACKAGE)
+	private boolean inWilderness;
+
+	@Accessors(fluent = true)
+	@Getter(AccessLevel.PACKAGE)
+	private boolean hasOnlyUnchargedGlories;
+
+	private boolean gameStateChangeVarbitRace;
 
 	@Provides
 	WildernessTeleportsConfig getConfig(ConfigManager configManager)
@@ -56,12 +111,91 @@ public class WildernessTeleportsPlugin extends Plugin
 	@Override
 	public void startUp()
 	{
+		if (client.getGameState() == GameState.LOGGED_IN)
+		{
+			clientThread.invokeLater(() ->
+			{
+				checkInWilderness();
+				checkChargedGlories();
+			});
+		}
 		overlayManager.add(overlay);
 	}
 
 	@Override
 	public void shutDown()
 	{
+		gameStateChangeVarbitRace = false;
 		overlayManager.remove(overlay);
+	}
+
+	@Subscribe
+	void onItemContainerChanged(ItemContainerChanged event)
+	{
+		final int changedContainerId = event.getContainerId();
+		if (changedContainerId != InventoryID.INVENTORY.getId() && changedContainerId != InventoryID.EQUIPMENT.getId())
+		{
+			return;
+		}
+
+		checkChargedGlories();
+	}
+
+	@Subscribe
+	void onGameStateChanged(GameStateChanged event)
+	{
+		final GameState state = event.getGameState();
+		if (state == GameState.LOADING || state == GameState.LOGGED_IN)
+		{
+			gameStateChangeVarbitRace = true;
+		}
+	}
+
+	@Subscribe
+	void onVarbitChanged(VarbitChanged event)
+	{
+		if (gameStateChangeVarbitRace)
+		{
+			return;
+		}
+
+		checkInWilderness();
+	}
+
+	@Subscribe
+	void onGameTick(GameTick event)
+	{
+		gameStateChangeVarbitRace = false;
+	}
+
+	private void checkInWilderness()
+	{
+		inWilderness = client.getVar(Varbits.IN_WILDERNESS) == 1;
+	}
+
+	private void checkChargedGlories()
+	{
+		final ItemContainer inventory = client.getItemContainer(InventoryID.INVENTORY);
+		final ItemContainer equipment = client.getItemContainer(InventoryID.EQUIPMENT);
+		final boolean hasUnchargedGlory = containerHasAnyId(inventory, UNCHARGED_GLORY_IDS) || containerHasAnyId(equipment, UNCHARGED_GLORY_IDS);
+		final boolean hasChargedGlory = containerHasAnyId(inventory, CHARGED_GLORY_IDS) || containerHasAnyId(equipment, CHARGED_GLORY_IDS);
+		hasOnlyUnchargedGlories = hasUnchargedGlory && !hasChargedGlory;
+	}
+
+	private static boolean containerHasAnyId(@Nullable final ItemContainer container, final List<Integer> itemIds)
+	{
+		if (container == null)
+		{
+			return false;
+		}
+
+		for (int item : itemIds)
+		{
+			if (container.contains(item))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 }
