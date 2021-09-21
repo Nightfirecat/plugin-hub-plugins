@@ -53,6 +53,7 @@ import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.client.callback.ClientThread;
+import net.runelite.client.chat.ChatMessageManager;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.SpriteManager;
@@ -112,6 +113,10 @@ public class VirtualLevelUpsPlugin extends Plugin
 
 	@Inject
 	private ConfigManager configManager;
+
+	@Getter(AccessLevel.PACKAGE)
+	@Inject
+	private ChatMessageManager chatMessageManager;
 
 	@Getter(AccessLevel.PACKAGE)
 	private BufferedImage reportButton;

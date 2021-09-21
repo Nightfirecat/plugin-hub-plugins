@@ -29,6 +29,7 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.List;
 import lombok.Getter;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.Experience;
 import net.runelite.api.FontID;
 import net.runelite.api.Player;
@@ -40,6 +41,7 @@ import net.runelite.api.widgets.WidgetPositionMode;
 import net.runelite.api.widgets.WidgetSizeMode;
 import net.runelite.api.widgets.WidgetTextAlignment;
 import net.runelite.api.widgets.WidgetType;
+import net.runelite.client.chat.QueuedMessage;
 import net.runelite.client.game.chatbox.ChatboxInput;
 import net.runelite.client.input.KeyListener;
 
@@ -151,6 +153,13 @@ class VirtualLevelUpsInterfaceInput extends ChatboxInput implements KeyListener
 		}
 
 		plugin.takeScreenshot(skill);
+
+		plugin.getChatMessageManager().queue(QueuedMessage.builder()
+			.type(ChatMessageType.GAMEMESSAGE)
+			.runeLiteFormattedMessage(skillExperience == Experience.MAX_SKILL_XP
+				? "Congratulations, you've just reached max experience in " + skillName + '!'
+				: "Congratulations, you've just advanced your " + skillName + " level. You are now virtual level " + skillLevel + '.')
+			.build());
 	}
 
 	@Override
