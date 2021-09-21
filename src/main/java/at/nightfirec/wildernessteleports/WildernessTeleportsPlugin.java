@@ -79,9 +79,6 @@ public class WildernessTeleportsPlugin extends Plugin
 	);
 
 	@Inject
-	private WildernessTeleportsConfig config;
-
-	@Inject
 	private WildernessTeleportsOverlay overlay;
 
 	@Inject

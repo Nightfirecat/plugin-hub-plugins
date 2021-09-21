@@ -43,13 +43,15 @@ class WildernessTeleportsOverlay extends Overlay
 	private final PanelComponent imagePanelComponent = new PanelComponent();
 
 	private final WildernessTeleportsPlugin plugin;
+	private final WildernessTeleportsConfig config;
 
 	@Inject
-	private WildernessTeleportsOverlay(WildernessTeleportsPlugin plugin, ItemManager itemManager)
+	private WildernessTeleportsOverlay(WildernessTeleportsPlugin plugin, WildernessTeleportsConfig config, ItemManager itemManager)
 	{
 		setPosition(OverlayPosition.TOP_CENTER);
 		setPriority(OverlayPriority.HIGH);
 		this.plugin = plugin;
+		this.config = config;
 		imagePanelComponent.setBackgroundColor(BACKGROUND_COLOR);
 		imagePanelComponent.getChildren().add(new ImageComponent(itemManager.getImage(ItemID.AMULET_OF_GLORY)));
 	}
@@ -57,11 +59,11 @@ class WildernessTeleportsOverlay extends Overlay
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-		if (!(plugin.isInWilderness() && plugin.hasOnlyUnchargedGlories()))
+		if (plugin.hasOnlyUnchargedGlories() && (plugin.isInWilderness() || config.unchargeWarningOutsideWilderness()))
 		{
-			return null;
+			return imagePanelComponent.render(graphics);
 		}
 
-		return imagePanelComponent.render(graphics);
+		return null;
 	}
 }
