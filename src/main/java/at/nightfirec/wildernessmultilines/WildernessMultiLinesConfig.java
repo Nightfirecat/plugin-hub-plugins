@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, Jordan <nightfirecat@protonmail.com>
+ * Copyright (c) 2020, Jordan <nightfirecat@protonmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,16 +22,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package at.nightfirec.placeholder;
+package at.nightfirec.wildernessmultilines;
 
-import net.runelite.client.RuneLite;
-import net.runelite.client.externalplugins.ExternalPluginManager;
+import net.runelite.client.config.Config;
+import net.runelite.client.config.ConfigGroup;
+import net.runelite.client.config.ConfigItem;
 
-public class PlaceholderPluginTest
+@ConfigGroup("wilderness-multi-lines")
+public interface WildernessMultiLinesConfig extends Config
 {
-	public static void main(String[] args) throws Exception
+	@ConfigItem(
+		keyName = "showSpearLines",
+		name = "Show spear lines",
+		description = "Show the area in which you can potentially speared into a multi-combat zone"
+	)
+	default boolean showSpearLines()
 	{
-		ExternalPluginManager.loadBuiltin(PlaceholderPlugin.class);
-		RuneLite.main(args);
+		return false;
 	}
 }

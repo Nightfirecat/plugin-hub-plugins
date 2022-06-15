@@ -1,4 +1,5 @@
 /*
+ * Copyright (c) 2018, Woox <https://github.com/wooxsolo>
  * Copyright (c) 2021, Jordan Atwood <nightfirecat@protonmail.com>
  * All rights reserved.
  *
@@ -23,32 +24,65 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package at.nightfirec.placeholder;
+package at.nightfirec.wildernessmultilines;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.geom.GeneralPath;
 import javax.inject.Inject;
+import net.runelite.api.Client;
+import net.runelite.api.Perspective;
+import net.runelite.api.Point;
+import net.runelite.api.coords.LocalPoint;
+import net.runelite.api.geometry.Geometry;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
-import net.runelite.client.ui.overlay.OverlayPriority;
 
-class PlaceholderOverlay extends Overlay
+class WildernessMultiLinesOverlay extends Overlay
 {
-	private final PlaceholderPlugin plugin;
+	private final WildernessMultiLinesPlugin plugin;
+	private final WildernessMultiLinesConfig config;
+	private final Client client;
 
 	@Inject
-	private PlaceholderOverlay(PlaceholderPlugin plugin)
+	private WildernessMultiLinesOverlay(WildernessMultiLinesPlugin plugin, WildernessMultiLinesConfig config, Client client)
 	{
 		setPosition(OverlayPosition.DYNAMIC);
-		setPriority(OverlayPriority.HIGH);
-		setLayer(OverlayLayer.ABOVE_WIDGETS);
+		setLayer(OverlayLayer.ABOVE_SCENE);
 		this.plugin = plugin;
+		this.config = config;
+		this.client = client;
 	}
 
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
+		if (config.showSpearLines())
+		{
+			renderPath(graphics, plugin.getSpearLinesToDisplay(), Color.ORANGE);
+		}
+		renderPath(graphics, plugin.getMultiLinesToDisplay(), Color.RED);
 		return null;
+	}
+
+	private void renderPath(Graphics2D graphics, GeneralPath path, Color color)
+	{
+		graphics.setColor(color);
+		graphics.setStroke(new BasicStroke(1));
+
+		path = Geometry.filterPath(path, (p1, p2) ->
+			Perspective.localToCanvas(client, new LocalPoint((int)p1[0], (int)p1[1]), client.getPlane()) != null &&
+			Perspective.localToCanvas(client, new LocalPoint((int)p2[0], (int)p2[1]), client.getPlane()) != null);
+		path = Geometry.transformPath(path, coords ->
+		{
+			Point point = Perspective.localToCanvas(client, new LocalPoint((int)coords[0], (int)coords[1]), client.getPlane());
+			coords[0] = point.getX();
+			coords[1] = point.getY();
+		});
+
+		graphics.draw(path);
 	}
 }
