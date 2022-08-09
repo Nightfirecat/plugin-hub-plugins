@@ -24,6 +24,8 @@
  */
 package at.nightfirec.wildernessmultilines;
 
+import java.awt.Color;
+import net.runelite.client.config.Alpha;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
@@ -32,6 +34,17 @@ import net.runelite.client.config.ConfigItem;
 public interface WildernessMultiLinesConfig extends Config
 {
 	@ConfigItem(
+		keyName = "multiLinesColor",
+		name = "Multi lines color",
+		description = "Color of lines bordering multi-combat zones in the wilderness"
+	)
+	@Alpha
+	default Color multiLinesColor()
+	{
+		return Color.RED;
+	}
+
+	@ConfigItem(
 		keyName = "showSpearLines",
 		name = "Show spear lines",
 		description = "Show the area in which you can potentially speared into a multi-combat zone"
@@ -39,5 +52,16 @@ public interface WildernessMultiLinesConfig extends Config
 	default boolean showSpearLines()
 	{
 		return false;
+	}
+
+	@ConfigItem(
+		keyName = "spearLinesColor",
+		name = "Spear lines color",
+		description = "Color of lines bordering spear areas surrounding multi-combat zones in the wilderness"
+	)
+	@Alpha
+	default Color spearLinesColor()
+	{
+		return Color.ORANGE;
 	}
 }

@@ -62,9 +62,9 @@ class WildernessMultiLinesOverlay extends Overlay
 	{
 		if (config.showSpearLines())
 		{
-			renderPath(graphics, plugin.getSpearLinesToDisplay(), Color.ORANGE);
+			renderPath(graphics, plugin.getSpearLinesToDisplay(), config.spearLinesColor());
 		}
-		renderPath(graphics, plugin.getMultiLinesToDisplay(), Color.RED);
+		renderPath(graphics, plugin.getMultiLinesToDisplay(), config.multiLinesColor());
 		return null;
 	}
 
