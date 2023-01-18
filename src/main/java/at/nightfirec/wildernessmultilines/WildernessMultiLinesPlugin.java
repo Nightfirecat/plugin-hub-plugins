@@ -61,6 +61,7 @@ public class WildernessMultiLinesPlugin extends Plugin
 		new Rectangle(3200, 3904, 192, 64), // Northeast p2p wilderness
 		new Rectangle(3152, 3752, 176, 88), // North-mid east f2p wilderness
 		new Rectangle(3192, 3523, 136, 229), // East f2p wilderness
+		new Rectangle(3191, 3689, 1, 1), // One silly tile that used to be a BH "singles" lure spot
 		new Rectangle(3136, 3523, 56, 61), // Wilderness north of Grand Exchange
 		new Rectangle(3152, 3584, 40, 36), // SE of Ferox 1
 		new Rectangle(3146, 3598, 6, 22), // SE of Ferox 2
