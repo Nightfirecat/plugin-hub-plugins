@@ -174,7 +174,7 @@ public class WildernessTeleportsPlugin extends Plugin
 
 	private void checkInWilderness()
 	{
-		inWilderness = client.getVar(Varbits.IN_WILDERNESS) == 1;
+		inWilderness = client.getVarbitValue(Varbits.IN_WILDERNESS) == 1;
 	}
 
 	private void checkChargedGlories()
