@@ -74,8 +74,8 @@ public class WildernessTeleportsPlugin extends Plugin
 	private static final List<Integer> UNCHARGED_GLORY_IDS = ImmutableList.of(
 		ItemID.AMULET_OF_GLORY,
 		ItemID.AMULET_OF_GLORY_T,
-		ItemID.AMULET_OF_GLORY_8283, // mounted glory interface item
-		ItemID.AMULET_OF_GLORY_20586 // LMS glory
+		ItemID.AMULET_OF_GLORY_8283 // mounted glory interface item
+		// ItemID.AMULET_OF_GLORY_20586 // LMS glory; not included here as you cannot teleport from LMS anyway
 	);
 
 	@Inject
