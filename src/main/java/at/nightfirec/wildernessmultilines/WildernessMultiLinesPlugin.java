@@ -54,6 +54,7 @@ public class WildernessMultiLinesPlugin extends Plugin
 		new Rectangle(2946, 3816, 14, 16), // Chaos altar
 		new Rectangle(2984, 3912, 24, 16), // Balance crossing to wilderness agility course
 		new Rectangle(3008, 3856, 40, 48), // North of kbd entrance
+		new Rectangle(3021, 3855, 2, 1), // Two tiles NE of kbd entrance cage
 		new Rectangle(3048, 3896, 24, 8), // North of rune rocks
 		new Rectangle(3072, 3880, 64, 24), // North of lava maze
 		new Rectangle(3112, 3872, 24, 8), // Northeast of lava maze
