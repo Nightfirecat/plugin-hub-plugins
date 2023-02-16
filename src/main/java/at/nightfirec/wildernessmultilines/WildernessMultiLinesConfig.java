@@ -69,10 +69,10 @@ public interface WildernessMultiLinesConfig extends Config
 	}
 
 	@ConfigItem(
-			position = 4,
-			keyName = "onlyShowInWilderness",
-			name = "Only show in Wilderness",
-			description = "Only show the lines if you are in the Wilderness"
+		position = 4,
+		keyName = "onlyShowInWilderness",
+		name = "Only show in Wilderness",
+		description = "Only show the lines if you are in the Wilderness"
 	)
 	default boolean onlyShowInWilderness()
 	{
