@@ -61,8 +61,8 @@ class WildernessMultiLinesOverlay extends Overlay
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-		boolean inWilderness = client.getVarbitValue(Varbits.IN_WILDERNESS) == 1;
-		if (config.onlyShowInWilderness() && !inWilderness)
+		final boolean inWilderness = client.getVarbitValue(Varbits.IN_WILDERNESS) == 1;
+		if (!inWilderness && config.onlyShowInWilderness())
 		{
 			return null;
 		}
