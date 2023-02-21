@@ -34,6 +34,7 @@ import net.runelite.client.config.ConfigItem;
 public interface WildernessMultiLinesConfig extends Config
 {
 	@ConfigItem(
+		position = 1,
 		keyName = "multiLinesColor",
 		name = "Multi lines color",
 		description = "Color of lines bordering multi-combat zones in the wilderness"
@@ -45,6 +46,7 @@ public interface WildernessMultiLinesConfig extends Config
 	}
 
 	@ConfigItem(
+		position = 2,
 		keyName = "showSpearLines",
 		name = "Show spear lines",
 		description = "Show the area in which you can potentially speared into a multi-combat zone"
@@ -55,6 +57,7 @@ public interface WildernessMultiLinesConfig extends Config
 	}
 
 	@ConfigItem(
+		position = 3,
 		keyName = "spearLinesColor",
 		name = "Spear lines color",
 		description = "Color of lines bordering spear areas surrounding multi-combat zones in the wilderness"
@@ -63,5 +66,16 @@ public interface WildernessMultiLinesConfig extends Config
 	default Color spearLinesColor()
 	{
 		return Color.ORANGE;
+	}
+
+	@ConfigItem(
+		position = 4,
+		keyName = "onlyShowInWilderness",
+		name = "Only show in Wilderness",
+		description = "Only show the lines if you are in the Wilderness"
+	)
+	default boolean onlyShowInWilderness()
+	{
+		return true;
 	}
 }

@@ -35,6 +35,7 @@ import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.Perspective;
 import net.runelite.api.Point;
+import net.runelite.api.Varbits;
 import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.geometry.Geometry;
 import net.runelite.client.ui.overlay.Overlay;
@@ -60,6 +61,12 @@ class WildernessMultiLinesOverlay extends Overlay
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
+		final boolean inWilderness = client.getVarbitValue(Varbits.IN_WILDERNESS) == 1;
+		if (!inWilderness && config.onlyShowInWilderness())
+		{
+			return null;
+		}
+
 		if (config.showSpearLines())
 		{
 			renderPath(graphics, plugin.getSpearLinesToDisplay(), config.spearLinesColor());
