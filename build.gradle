@@ -23,7 +23,7 @@ dependencies {
 }
 
 group = 'at.nightfirec.wildernesslines'
-version = '1.2.0'
+version = '1.3.0'
 sourceCompatibility = '1.8'
 
 tasks.withType(JavaCompile) {
