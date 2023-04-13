@@ -24,7 +24,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package at.nightfirec.wildernessmultilines;
+package at.nightfirec.wildernesslines;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -42,14 +42,14 @@ import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 
-class WildernessMultiLinesOverlay extends Overlay
+class WildernessLinesOverlay extends Overlay
 {
-	private final WildernessMultiLinesPlugin plugin;
-	private final WildernessMultiLinesConfig config;
+	private final WildernessLinesPlugin plugin;
+	private final WildernessLinesConfig config;
 	private final Client client;
 
 	@Inject
-	private WildernessMultiLinesOverlay(WildernessMultiLinesPlugin plugin, WildernessMultiLinesConfig config, Client client)
+	private WildernessLinesOverlay(WildernessLinesPlugin plugin, WildernessLinesConfig config, Client client)
 	{
 		setPosition(OverlayPosition.DYNAMIC);
 		setLayer(OverlayLayer.ABOVE_SCENE);
@@ -72,6 +72,17 @@ class WildernessMultiLinesOverlay extends Overlay
 			renderPath(graphics, plugin.getSpearLinesToDisplay(), config.spearLinesColor());
 		}
 		renderPath(graphics, plugin.getMultiLinesToDisplay(), config.multiLinesColor());
+
+		if (config.show20Line())
+		{
+			renderPath(graphics, plugin.get20LineToDisplay(), config.twentyLineColor());
+		}
+
+		if (config.show30Line())
+		{
+			renderPath(graphics, plugin.get30LineToDisplay(), config.thirtyLineColor());
+		}
+
 		return null;
 	}
 

@@ -1,4 +1,9 @@
-# Wilderness Multi Lines
+# Wilderness Lines
 
-Display red lines around wilderness multi-combat zones with a config setting to also show lines
-around areas where you can be dragon speared into said multi-combat zones.
+(formerly *Wilderness Multi Lines*)
+
+Display lines around key areas in the wilderness:
+* Multi-combat zones
+* Area where you're within dragon spear range of multi-combat zones
+* Dividing line between 20 and 21 wilderness
+* Dividing line between 30 and 31 wilderness

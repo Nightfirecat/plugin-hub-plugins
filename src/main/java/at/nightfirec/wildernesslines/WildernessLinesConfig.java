@@ -22,22 +22,42 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package at.nightfirec.wildernessmultilines;
+package at.nightfirec.wildernesslines;
 
 import java.awt.Color;
 import net.runelite.client.config.Alpha;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
+import net.runelite.client.config.ConfigSection;
 
 @ConfigGroup("wilderness-multi-lines")
-public interface WildernessMultiLinesConfig extends Config
+public interface WildernessLinesConfig extends Config
 {
+	@ConfigItem(
+		position = 0,
+		keyName = "onlyShowInWilderness",
+		name = "Only show in Wilderness",
+		description = "Only show the lines if you are in the Wilderness"
+	)
+	default boolean onlyShowInWilderness()
+	{
+		return true;
+	}
+
+	@ConfigSection(
+		name = "Multi Lines",
+		description = "",
+		position = 1
+	)
+	String multiLines = "multiLines";
+
 	@ConfigItem(
 		position = 1,
 		keyName = "multiLinesColor",
 		name = "Multi lines color",
-		description = "Color of lines bordering multi-combat zones in the wilderness"
+		description = "Color of lines bordering multi-combat zones in the wilderness",
+		section = multiLines
 	)
 	@Alpha
 	default Color multiLinesColor()
@@ -49,7 +69,8 @@ public interface WildernessMultiLinesConfig extends Config
 		position = 2,
 		keyName = "showSpearLines",
 		name = "Show spear lines",
-		description = "Show the area in which you can potentially speared into a multi-combat zone"
+		description = "Show the area in which you can potentially speared into a multi-combat zone",
+		section = multiLines
 	)
 	default boolean showSpearLines()
 	{
@@ -60,7 +81,8 @@ public interface WildernessMultiLinesConfig extends Config
 		position = 3,
 		keyName = "spearLinesColor",
 		name = "Spear lines color",
-		description = "Color of lines bordering spear areas surrounding multi-combat zones in the wilderness"
+		description = "Color of lines bordering spear areas surrounding multi-combat zones in the wilderness",
+		section = multiLines
 	)
 	@Alpha
 	default Color spearLinesColor()
@@ -68,14 +90,60 @@ public interface WildernessMultiLinesConfig extends Config
 		return Color.ORANGE;
 	}
 
-	@ConfigItem(
-		position = 4,
-		keyName = "onlyShowInWilderness",
-		name = "Only show in Wilderness",
-		description = "Only show the lines if you are in the Wilderness"
+	@ConfigSection(
+		name = "Level Lines",
+		description = "",
+		position = 2
 	)
-	default boolean onlyShowInWilderness()
+	String levelLines = "levelLines";
+
+	@ConfigItem(
+		position = 1,
+		keyName = "show20Line",
+		name = "Show 20 line",
+		description = "Show a line which separates 20 from 21 wilderness",
+		section = levelLines
+	)
+	default boolean show20Line()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		position = 2,
+		keyName = "twentyLineColor",
+		name = "20 line color",
+		description = "Color of the line separating 20 from 21 wilderness",
+		section = levelLines
+	)
+	@Alpha
+	default Color twentyLineColor()
+	{
+		return Color.GREEN;
+	}
+
+	@ConfigItem(
+		position = 3,
+		keyName = "show30Line",
+		name = "Show 30 line",
+		description = "Show a line which separates 30 from 31 wilderness",
+		section = levelLines
+	)
+	default boolean show30Line()
 	{
 		return true;
+	}
+
+	@ConfigItem(
+		position = 4,
+		keyName = "thirtyLineColor",
+		name = "30 line color",
+		description = "Color of the line separating 30 from 31 wilderness",
+		section = levelLines
+	)
+	@Alpha
+	default Color thirtyLineColor()
+	{
+		return Color.CYAN;
 	}
 }

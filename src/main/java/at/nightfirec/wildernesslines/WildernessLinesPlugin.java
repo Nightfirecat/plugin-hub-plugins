@@ -23,13 +23,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package at.nightfirec.wildernessmultilines;
+package at.nightfirec.wildernesslines;
 
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Provides;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
 import java.util.List;
 import javax.inject.Inject;
 import net.runelite.api.Client;
@@ -43,11 +45,11 @@ import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
 
 @PluginDescriptor(
-	name = "Wilderness Multi Lines",
-	description = "Show wilderness multicombat areas and dragon spear range to those areas.",
-	tags = {"dragon", "spear", "multicombat", "wildy"}
+	name = "Wilderness Lines",
+	description = "Show wilderness multicombat areas, the dragon spear range to those areas, and level 20 and 30 lines.",
+	tags = {"dragon spear", "multicombat", "wildy", "20", "30", "wilderness level"}
 )
-public class WildernessMultiLinesPlugin extends Plugin
+public class WildernessLinesPlugin extends Plugin
 {
 	private static final List<Rectangle> WILDERNESS_MULTI_AREAS = ImmutableList.of(
 		new Rectangle(3008, 3600, 64, 112), // Dark warrior's palace
@@ -76,6 +78,19 @@ public class WildernessMultiLinesPlugin extends Plugin
 		new Rectangle(3175, 3647, 1, 1) // One dumb tile north of bridge east of Ferox
 	);
 	private static final int SPEAR_RANGE = 4;
+	private static final Line2D[] TWENTY_LINES = {
+		new Line2D.Float(2946, 3680, 3384, 3680),
+		new Line2D.Float(3202, 10080, 3205, 10080),
+		new Line2D.Float(3216, 10080, 3224, 10080),
+		new Line2D.Float(3228, 10080, 3230, 10080),
+		new Line2D.Float(3234, 10080, 3245, 10080),
+	};
+	private static final Line2D[] THIRTY_LINES = {
+		new Line2D.Float(2946, 3760, 3375, 3760),
+		new Line2D.Float(3164, 10160, 3185, 10160),
+		new Line2D.Float(3194, 10160, 3221, 10160),
+		new Line2D.Float(3235, 10160, 3255, 10160),
+	};
 
 	private static final Area MULTI_AREA = new Area();
 	private static final Area SPEAR_MULTI_AREA = new Area();
@@ -95,7 +110,7 @@ public class WildernessMultiLinesPlugin extends Plugin
 	}
 
 	@Inject
-	private WildernessMultiLinesOverlay overlay;
+	private WildernessLinesOverlay overlay;
 
 	@Inject
 	private OverlayManager overlayManager;
@@ -104,9 +119,9 @@ public class WildernessMultiLinesPlugin extends Plugin
 	private Client client;
 
 	@Provides
-	WildernessMultiLinesConfig getConfig(ConfigManager configManager)
+	WildernessLinesConfig getConfig(ConfigManager configManager)
 	{
-		return configManager.getConfig(WildernessMultiLinesConfig.class);
+		return configManager.getConfig(WildernessLinesConfig.class);
 	}
 
 	@Override
@@ -130,26 +145,39 @@ public class WildernessMultiLinesPlugin extends Plugin
 
 	GeneralPath getMultiLinesToDisplay()
 	{
-		return getLinesToDisplay(false);
+		return getLinesToDisplay(MULTI_AREA);
 	}
 
 	GeneralPath getSpearLinesToDisplay()
 	{
-		return getLinesToDisplay(true);
+		return getLinesToDisplay(SPEAR_MULTI_AREA);
 	}
 
-	private GeneralPath getLinesToDisplay(final boolean spearLines)
+	GeneralPath get20LineToDisplay()
 	{
-		final Area area = spearLines ? SPEAR_MULTI_AREA : MULTI_AREA;
+		return getLinesToDisplay(TWENTY_LINES);
+	}
 
+	GeneralPath get30LineToDisplay()
+	{
+		return getLinesToDisplay(THIRTY_LINES);
+	}
+
+	private GeneralPath getLinesToDisplay(final Shape... shapes)
+	{
 		final Rectangle sceneRect = new Rectangle(
 			client.getBaseX() + 1, client.getBaseY() + 1,
 			Constants.SCENE_SIZE - 2, Constants.SCENE_SIZE - 2);
 
-		GeneralPath lines = new GeneralPath(area);
-		lines = Geometry.clipPath(lines, sceneRect);
-		lines = Geometry.splitIntoSegments(lines, 1);
-		lines = Geometry.transformPath(lines, this::transformWorldToLocal);
-		return lines;
+		final GeneralPath paths = new GeneralPath();
+		for (final Shape shape : shapes)
+		{
+			GeneralPath lines = new GeneralPath(shape);
+			lines = Geometry.clipPath(lines, sceneRect);
+			lines = Geometry.splitIntoSegments(lines, 1);
+			lines = Geometry.transformPath(lines, this::transformWorldToLocal);
+			paths.append(lines, false);
+		}
+		return paths;
 	}
 }

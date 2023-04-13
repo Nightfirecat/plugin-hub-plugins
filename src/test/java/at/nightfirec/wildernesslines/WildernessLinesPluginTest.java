@@ -22,16 +22,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package at.nightfirec.wildernessmultilines;
+package at.nightfirec.wildernesslines;
 
 import net.runelite.client.RuneLite;
 import net.runelite.client.externalplugins.ExternalPluginManager;
 
-public class WildernessMultiLinesPluginTest
+public class WildernessLinesPluginTest
 {
 	public static void main(String[] args) throws Exception
 	{
-		ExternalPluginManager.loadBuiltin(WildernessMultiLinesPlugin.class);
+		ExternalPluginManager.loadBuiltin(WildernessLinesPlugin.class);
 		RuneLite.main(args);
 	}
 }

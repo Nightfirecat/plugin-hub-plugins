@@ -22,7 +22,7 @@ dependencies {
 	testImplementation group: 'net.runelite', name:'jshell', version: runeLiteVersion
 }
 
-group = 'at.nightfirec.wildernessmultilines'
+group = 'at.nightfirec.wildernesslines'
 version = '1.2.0'
 sourceCompatibility = '1.8'
 
