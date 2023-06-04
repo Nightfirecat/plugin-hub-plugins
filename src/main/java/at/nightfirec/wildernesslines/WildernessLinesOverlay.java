@@ -73,6 +73,12 @@ class WildernessLinesOverlay extends Overlay
 		}
 		renderPath(graphics, plugin.getMultiLinesToDisplay(), config.multiLinesColor());
 
+
+		if (config.show10Line())
+		{
+			renderPath(graphics, plugin.get10LineToDisplay(), config.tenLineColor());
+		}
+
 		if (config.show20Line())
 		{
 			renderPath(graphics, plugin.get20LineToDisplay(), config.twentyLineColor());
@@ -81,6 +87,16 @@ class WildernessLinesOverlay extends Overlay
 		if (config.show30Line())
 		{
 			renderPath(graphics, plugin.get30LineToDisplay(), config.thirtyLineColor());
+		}
+
+		if (config.show40Line())
+		{
+			renderPath(graphics, plugin.get40LineToDisplay(), config.fortyLineColor());
+		}
+
+		if (config.show50Line())
+		{
+			renderPath(graphics, plugin.get50LineToDisplay(), config.fiftyLineColor());
 		}
 
 		return null;

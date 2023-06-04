@@ -78,6 +78,9 @@ public class WildernessLinesPlugin extends Plugin
 		new Rectangle(3175, 3647, 1, 1) // One dumb tile north of bridge east of Ferox
 	);
 	private static final int SPEAR_RANGE = 4;
+	private static final Line2D[] TEN_LINES = {
+		new Line2D.Float(2946, 3600, 3378, 3600)
+	};
 	private static final Line2D[] TWENTY_LINES = {
 		new Line2D.Float(2946, 3680, 3384, 3680),
 		new Line2D.Float(3202, 10080, 3205, 10080),
@@ -90,6 +93,13 @@ public class WildernessLinesPlugin extends Plugin
 		new Line2D.Float(3164, 10160, 3185, 10160),
 		new Line2D.Float(3194, 10160, 3221, 10160),
 		new Line2D.Float(3235, 10160, 3255, 10160),
+	};
+
+	private static final Line2D[] FORTY_LINES = {
+			new Line2D.Float(2946, 3840, 3349, 3840)
+	};
+	private static final Line2D[] FIFTY_LINES = {
+			new Line2D.Float(2946, 3920, 3383, 3920)
 	};
 
 	private static final Area MULTI_AREA = new Area();
@@ -152,6 +162,10 @@ public class WildernessLinesPlugin extends Plugin
 	{
 		return getLinesToDisplay(SPEAR_MULTI_AREA);
 	}
+	GeneralPath get10LineToDisplay()
+	{
+		return getLinesToDisplay(TEN_LINES);
+	}
 
 	GeneralPath get20LineToDisplay()
 	{
@@ -161,6 +175,16 @@ public class WildernessLinesPlugin extends Plugin
 	GeneralPath get30LineToDisplay()
 	{
 		return getLinesToDisplay(THIRTY_LINES);
+	}
+
+	GeneralPath get40LineToDisplay()
+	{
+		return getLinesToDisplay(FORTY_LINES);
+	}
+
+	GeneralPath get50LineToDisplay()
+	{
+		return getLinesToDisplay(FIFTY_LINES);
 	}
 
 	private GeneralPath getLinesToDisplay(final Shape... shapes)

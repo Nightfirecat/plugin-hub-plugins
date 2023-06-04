@@ -97,8 +97,35 @@ public interface WildernessLinesConfig extends Config
 	)
 	String levelLines = "levelLines";
 
+	//config for lvl10
 	@ConfigItem(
-		position = 1,
+			position = 1,
+			keyName = "show10Line",
+			name = "Show 10 line",
+			description = "Show a line which separates 10 from 11 wilderness",
+			section = levelLines
+	)
+	default boolean show10Line()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+			position = 2,
+			keyName = "tenLineColor",
+			name = "10 line color",
+			description = "Color of the line separating 10 from 11 wilderness",
+			section = levelLines
+	)
+	@Alpha
+	default Color tenLineColor()
+	{
+		return Color.WHITE;
+	}
+
+	//config for lvl20
+	@ConfigItem(
+		position = 3,
 		keyName = "show20Line",
 		name = "Show 20 line",
 		description = "Show a line which separates 20 from 21 wilderness",
@@ -110,7 +137,7 @@ public interface WildernessLinesConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 2,
+		position = 4,
 		keyName = "twentyLineColor",
 		name = "20 line color",
 		description = "Color of the line separating 20 from 21 wilderness",
@@ -119,11 +146,12 @@ public interface WildernessLinesConfig extends Config
 	@Alpha
 	default Color twentyLineColor()
 	{
-		return Color.GREEN;
+		return Color.YELLOW;
 	}
 
+	//config for lvl30
 	@ConfigItem(
-		position = 3,
+		position = 5,
 		keyName = "show30Line",
 		name = "Show 30 line",
 		description = "Show a line which separates 30 from 31 wilderness",
@@ -135,7 +163,7 @@ public interface WildernessLinesConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 4,
+		position = 6,
 		keyName = "thirtyLineColor",
 		name = "30 line color",
 		description = "Color of the line separating 30 from 31 wilderness",
@@ -145,5 +173,57 @@ public interface WildernessLinesConfig extends Config
 	default Color thirtyLineColor()
 	{
 		return Color.CYAN;
+	}
+
+	//config for lvl40
+	@ConfigItem(
+			position = 7,
+			keyName = "show40Line",
+			name = "Show 40 line",
+			description = "Show a line which separates 40 from 41 wilderness",
+			section = levelLines
+	)
+	default boolean show40Line()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+			position = 8,
+			keyName = "fortyLineColor",
+			name = "40 line color",
+			description = "Color of the line separating 40 from 41 wilderness",
+			section = levelLines
+	)
+	@Alpha
+	default Color fortyLineColor()
+	{
+		return Color.PINK;
+	}
+
+	//config for lvl50
+	@ConfigItem(
+			position = 9,
+			keyName = "show50Line",
+			name = "Show 50 line",
+			description = "Show a line which separates 50 from 51 wilderness",
+			section = levelLines
+	)
+	default boolean show50Line()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+			position = 10,
+			keyName = "fiftyLineColor",
+			name = "50 line color",
+			description = "Color of the line separating 50 from 51 wilderness",
+			section = levelLines
+	)
+	@Alpha
+	default Color fiftyLineColor()
+	{
+		return Color.BLACK;
 	}
 }
