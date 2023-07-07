@@ -79,17 +79,36 @@ public class WildernessLinesPlugin extends Plugin
 	);
 	private static final int SPEAR_RANGE = 4;
 	private static final Line2D[] TWENTY_LINES = {
+		// overworld
 		new Line2D.Float(2946, 3680, 3384, 3680),
+
+		// rev caves
 		new Line2D.Float(3202, 10080, 3205, 10080),
 		new Line2D.Float(3216, 10080, 3224, 10080),
 		new Line2D.Float(3228, 10080, 3230, 10080),
 		new Line2D.Float(3234, 10080, 3245, 10080),
+
+		// wilderness slayer caves
+		new Line2D.Float(3335, 10080, 3344, 10080),
+		new Line2D.Float(3349, 10080, 3367, 10080),
+		new Line2D.Float(3381, 10080, 3385, 10080),
+		new Line2D.Float(3394, 10080, 3397, 10080),
+		new Line2D.Float(3410, 10080, 3416, 10080),
+		new Line2D.Float(3436, 10080, 3449, 10080),
 	};
 	private static final Line2D[] THIRTY_LINES = {
+		// overworld
 		new Line2D.Float(2946, 3760, 3375, 3760),
+
+		// rev caves
 		new Line2D.Float(3164, 10160, 3185, 10160),
 		new Line2D.Float(3194, 10160, 3221, 10160),
 		new Line2D.Float(3235, 10160, 3255, 10160),
+
+		// wilderness slayer caves
+		new Line2D.Float(3333, 10160, 3349, 10160),
+		new Line2D.Float(3356, 10160, 3368, 10160),
+		new Line2D.Float(3421, 10160, 3428, 10160),
 	};
 
 	private static final Area MULTI_AREA = new Area();
