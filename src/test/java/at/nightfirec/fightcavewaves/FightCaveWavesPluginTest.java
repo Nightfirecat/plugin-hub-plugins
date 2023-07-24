@@ -42,7 +42,6 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.externalplugins.ExternalPluginManager;
 import net.runelite.client.ui.overlay.OverlayManager;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;

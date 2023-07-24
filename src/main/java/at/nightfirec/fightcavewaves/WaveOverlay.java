@@ -61,7 +61,7 @@ class WaveOverlay extends OverlayPanel
 		final int currentWave = plugin.getCurrentWave();
 
 		if (!(plugin.inFightCave() || plugin.inInferno())
-			|| currentWave < 0
+			|| currentWave <= 0
 			|| activeWaves == null)
 		{
 			return null;
@@ -76,7 +76,7 @@ class WaveOverlay extends OverlayPanel
 		{
 			final Map<WaveMonster, Integer> waveContents = activeWaves.get(waveIndex);
 
-			addWaveInfo("Wave " + plugin.getCurrentWave(), waveContents);
+			addWaveInfo("Wave " + currentWave, waveContents);
 		}
 
 		if ((config.waveDisplay() == WaveDisplayMode.NEXT
