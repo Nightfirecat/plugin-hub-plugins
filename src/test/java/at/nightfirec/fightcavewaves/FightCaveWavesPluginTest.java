@@ -42,6 +42,7 @@ import net.runelite.client.config.ConfigManager;
 import net.runelite.client.externalplugins.ExternalPluginManager;
 import net.runelite.client.ui.overlay.OverlayManager;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
@@ -97,7 +98,7 @@ public class FightCaveWavesPluginTest
 	}
 
 	@Test
-	public void fightCaveWavesTest()
+	public void checkFightCaveWaves()
 	{
 		final List<Map<WaveMonster, Integer>> waves = FightCaveWavesPlugin.getFIGHT_CAVE_WAVES();
 
@@ -131,7 +132,7 @@ public class FightCaveWavesPluginTest
 	}
 
 	@Test
-	public void infernoWavesTest()
+	public void checkInfernoWaves()
 	{
 		final List<Map<WaveMonster, Integer>> waves = FightCaveWavesPlugin.getINFERNO_WAVES();
 
@@ -200,7 +201,7 @@ public class FightCaveWavesPluginTest
 	}
 
 	@Test
-	public void testLoginWithinFightCaves()
+	public void testLoginWithinFightCave()
 	{
 		when(client.getMapRegions()).thenReturn(new int[]{ FightCaveWavesPlugin.FIGHT_CAVE_REGION });
 
@@ -222,7 +223,7 @@ public class FightCaveWavesPluginTest
 	}
 
 	@Test
-	public void testFightCavesWaveOne()
+	public void testFightCaveWave()
 	{
 		when(client.getMapRegions()).thenReturn(new int[]{ FightCaveWavesPlugin.FIGHT_CAVE_REGION });
 
@@ -230,10 +231,16 @@ public class FightCaveWavesPluginTest
 
 		assertEquals(1, plugin.getCurrentWave());
 		assertEquals(FightCaveWavesPlugin.FIGHT_CAVE_WAVES, plugin.getActiveWaves());
+		assertFalse(plugin.isPaused());
+
+		plugin.onChatMessage(new ChatMessage(null, ChatMessageType.GAMEMESSAGE, "", "<col=ef1020>The Fight Cave has been paused. You may now log out.", "", 0));
+
+		assertEquals(1, plugin.getCurrentWave());
+		assertTrue(plugin.isPaused());
 	}
 
 	@Test
-	public void testInfernoWaveOne()
+	public void testInfernoWave()
 	{
 		when(client.getMapRegions()).thenReturn(new int[]{ FightCaveWavesPlugin.INFERNO_REGION});
 
@@ -241,18 +248,17 @@ public class FightCaveWavesPluginTest
 
 		assertEquals(1, plugin.getCurrentWave());
 		assertEquals(FightCaveWavesPlugin.INFERNO_WAVES, plugin.getActiveWaves());
-	}
+		assertFalse(plugin.isPaused());
 
-	@Test
-	public void testInfernoWaveComplete()
-	{
-		when(client.getMapRegions()).thenReturn(new int[]{ FightCaveWavesPlugin.INFERNO_REGION});
-
-		plugin.onChatMessage(new ChatMessage(null, ChatMessageType.GAMEMESSAGE, "", "<col=ef1020>Wave: 1</col>", "", 0));
-		plugin.onChatMessage(new ChatMessage(null, ChatMessageType.GAMEMESSAGE, "", "Wave complete!", "", 0));
+		plugin.onChatMessage(new ChatMessage(null, ChatMessageType.GAMEMESSAGE, "", " <col=ef1020>Your logout request has been received. The minigame will be paused at the end of this wave.<br><col=ef1020>If you try to log out before that, you will have to repeat this wave.", "", 0));
+		plugin.onChatMessage(new ChatMessage(null, ChatMessageType.GAMEMESSAGE, "", "Wave completed!", "", 0));
 
 		assertEquals(2, plugin.getCurrentWave());
-		assertEquals(FightCaveWavesPlugin.INFERNO_WAVES, plugin.getActiveWaves());
+		assertFalse(plugin.isPaused());
+
+		plugin.onChatMessage(new ChatMessage(null, ChatMessageType.GAMEMESSAGE, "", "<col=ef1020>The Inferno has been paused. You may now log out.", "", 0));
+
+		assertTrue(plugin.isPaused());
 	}
 
 	@Test

@@ -38,7 +38,6 @@ import javax.inject.Inject;
 import lombok.Getter;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
-import net.runelite.api.GameState;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.client.config.ConfigManager;
@@ -57,6 +56,7 @@ public class FightCaveWavesPlugin extends Plugin
 {
 	private static final Pattern WAVE_PATTERN = Pattern.compile(".*Wave: (\\d+).*");
 	private static final String INFERNO_WAVE_COMPLETE = "Wave completed!";
+	private static final Pattern PAUSE_PATTERN = Pattern.compile(".+The (?:Fight Cave|Inferno) has been paused\\. You may now log out\\.");
 	@VisibleForTesting
 	static final int FIGHT_CAVE_REGION = 9551;
 	@VisibleForTesting
@@ -74,12 +74,13 @@ public class FightCaveWavesPlugin extends Plugin
 	@Getter
 	static final List<Map<WaveMonster, Integer>> INFERNO_WAVES = new ArrayList<>();
 
-	@Getter
 	private int currentWave = -1;
 
 	@Getter
+	private boolean paused;
+
 	@Nullable
-	private List<Map<WaveMonster, Integer>> activeWaves;
+	private CaveType activeCave;
 
 	@Inject
 	private Client client;
@@ -118,36 +119,46 @@ public class FightCaveWavesPlugin extends Plugin
 	@Subscribe
 	public void onGameStateChanged(GameStateChanged event)
 	{
-		if (event.getGameState() != GameState.LOGGED_IN)
+		switch(event.getGameState())
 		{
-			return;
-		}
-
-		if (!inFightCave() && !inInferno())
-		{
-			resetWaves();
+			case LOGGED_IN:
+				if (!inFightCave() && !inInferno())
+				{
+					resetWaves();
+				}
+				break;
+			case LOGIN_SCREEN:
+				resetWaves();
+				break;
 		}
 	}
 
 	@Subscribe
 	public void onChatMessage(ChatMessage event)
 	{
-		if (event.getType() != ChatMessageType.GAMEMESSAGE)
+		if (event.getType() != ChatMessageType.GAMEMESSAGE
+			|| !(inFightCave() || inInferno()))
 		{
 			return;
 		}
 
-		if (activeWaves == INFERNO_WAVES
-			&& INFERNO_WAVE_COMPLETE.equals(event.getMessage()))
+		final String message = event.getMessage();
+		if (activeCave == CaveType.INFERNO
+			&& INFERNO_WAVE_COMPLETE.equals(message))
 		{
 			currentWave++;
 			return;
 		}
 
-		final Matcher waveMatcher = WAVE_PATTERN.matcher(event.getMessage());
+		final Matcher pauseMatcher = PAUSE_PATTERN.matcher(message);
+		if (pauseMatcher.matches())
+		{
+			paused = true;
+			return;
+		}
 
-		if (!(inFightCave() || inInferno())
-			|| !waveMatcher.matches())
+		final Matcher waveMatcher = WAVE_PATTERN.matcher(message);
+		if (!waveMatcher.matches())
 		{
 			return;
 		}
@@ -156,11 +167,11 @@ public class FightCaveWavesPlugin extends Plugin
 
 		if (inFightCave())
 		{
-			activeWaves = FIGHT_CAVE_WAVES;
+			activeCave = CaveType.FIGHT_CAVE;
 		}
 		else
 		{
-			activeWaves = INFERNO_WAVES;
+			activeCave = CaveType.INFERNO;
 		}
 	}
 
@@ -174,10 +185,39 @@ public class FightCaveWavesPlugin extends Plugin
 		return ArrayUtils.contains(client.getMapRegions(), INFERNO_REGION);
 	}
 
+	@Nullable
+	List<Map<WaveMonster, Integer>> getActiveWaves()
+	{
+		if (activeCave == null)
+		{
+			return null;
+		}
+
+		switch(activeCave)
+		{
+			case FIGHT_CAVE:
+				return FIGHT_CAVE_WAVES;
+			case INFERNO:
+				return INFERNO_WAVES;
+		}
+		return null;
+	}
+
+	int getCurrentWave()
+	{
+		if (activeCave == CaveType.INFERNO && paused)
+		{
+			return currentWave - 1;
+		}
+
+		return currentWave;
+	}
+
 	private void resetWaves()
 	{
 		currentWave = -1;
-		activeWaves = null;
+		activeCave = null;
+		paused = false;
 	}
 
 	static String formatMonsterQuantity(final WaveMonster monster, final int quantity, final boolean commonNames, final boolean showMonsterLevel)
