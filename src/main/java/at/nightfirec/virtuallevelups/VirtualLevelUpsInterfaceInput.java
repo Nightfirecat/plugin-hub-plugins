@@ -34,9 +34,9 @@ import net.runelite.api.Experience;
 import net.runelite.api.FontID;
 import net.runelite.api.Player;
 import net.runelite.api.Skill;
+import net.runelite.api.widgets.ComponentID;
 import net.runelite.api.widgets.JavaScriptCallback;
 import net.runelite.api.widgets.Widget;
-import net.runelite.api.widgets.WidgetInfo;
 import net.runelite.api.widgets.WidgetPositionMode;
 import net.runelite.api.widgets.WidgetSizeMode;
 import net.runelite.api.widgets.WidgetTextAlignment;
@@ -200,7 +200,7 @@ class VirtualLevelUpsInterfaceInput extends ChatboxInput implements KeyListener
 
 	private void triggerCloseViaMessage()
 	{
-		final Widget levelUpContinue = plugin.getClient().getWidget(WidgetInfo.CHATBOX_CONTAINER).getChild(2);
+		final Widget levelUpContinue = plugin.getClient().getWidget(ComponentID.CHATBOX_CONTAINER).getChild(2);
 		levelUpContinue.setText("Please wait...");
 
 		closeMessage = true;
@@ -239,7 +239,6 @@ class VirtualLevelUpsInterfaceInput extends ChatboxInput implements KeyListener
 			return;
 		}
 
-		localPlayer.setGraphic(fireworksGraphic);
-		localPlayer.setSpotAnimFrame(0);
+		localPlayer.createSpotAnim(0, fireworksGraphic, 0, 0);
 	}
 }

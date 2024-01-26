@@ -27,10 +27,8 @@ package at.nightfirec.virtuallevelups;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Provides;
-import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -38,14 +36,12 @@ import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
 import javax.inject.Inject;
-import javax.swing.SwingUtilities;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.Experience;
 import net.runelite.api.GameState;
-import net.runelite.api.Point;
 import net.runelite.api.Skill;
 import net.runelite.api.SpriteID;
 import net.runelite.api.events.StatChanged;
@@ -60,11 +56,10 @@ import net.runelite.client.game.SpriteManager;
 import net.runelite.client.game.chatbox.ChatboxPanelManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
-import net.runelite.client.ui.ClientUI;
 import net.runelite.client.ui.DrawManager;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ImageCapture;
-import net.runelite.client.util.ImageUploadStyle;
+import net.runelite.client.util.ImageUtil;
 
 @PluginDescriptor(
 	name = "Virtual Level Ups",
@@ -88,9 +83,6 @@ public class VirtualLevelUpsPlugin extends Plugin
 
 	@Inject
 	private DrawManager drawManager;
-
-	@Inject
-	private ClientUI clientUi;
 
 	@Inject
 	private ImageCapture imageCapture;
@@ -283,40 +275,21 @@ public class VirtualLevelUpsPlugin extends Plugin
 	{
 		final boolean includeFrame = configManager.getConfiguration("screenshot", "includeFrame").equals("true");
 
-		BufferedImage screenshot = includeFrame
-			? new BufferedImage(clientUi.getWidth(), clientUi.getHeight(), BufferedImage.TYPE_INT_ARGB)
-			: new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-
-		Graphics graphics = screenshot.getGraphics();
-
-		int gameOffsetX = 0;
-		int gameOffsetY = 0;
-
-		if (includeFrame)
+		final BufferedImage screenshot;
+		if (!includeFrame)
 		{
-			// Draw the client frame onto the screenshot
-			try
-			{
-				SwingUtilities.invokeAndWait(() -> clientUi.paint(graphics));
-			}
-			catch (InterruptedException | InvocationTargetException e)
-			{
-				log.warn("unable to paint client UI on screenshot", e);
-			}
-
-			// Evaluate the position of the game inside the frame
-			final Point canvasOffset = clientUi.getCanvasOffset();
-			gameOffsetX = canvasOffset.getX();
-			gameOffsetY = canvasOffset.getY();
+			screenshot = ImageUtil.bufferedImageFromImage(image);
+		}
+		else
+		{
+			screenshot = imageCapture.addClientFrame(image);
 		}
 
-		// Draw the game onto the screenshot
-		graphics.drawImage(image, gameOffsetX, gameOffsetY, null);
-		imageCapture.takeScreenshot(
+		imageCapture.saveScreenshot(
 			screenshot,
 			fileName,
 			subDir,
 			configManager.getConfiguration("screenshot", "notifyWhenTaken").equals("true"),
-			ImageUploadStyle.valueOf(configManager.getConfiguration("screenshot", "uploadScreenshot")));
+			false);
 	}
 }
