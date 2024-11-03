@@ -77,7 +77,7 @@ public class WildernessLinesPlugin extends Plugin
 		new Rectangle(3152, 3620, 10, 6), // SE of Ferox 3
 		new Rectangle(3187, 3620, 5, 28), // East of Ferox 1
 		new Rectangle(3176, 3636, 11, 12), // East of Ferox 2
-		new Rectangle(3175, 3647, 1, 1) // One dumb tile north of bridge east of Ferox
+		new Rectangle(3174, 3647, 2, 1) // Two dumb tiles north of bridge east of Ferox
 	);
 	private static final int SPEAR_RANGE = 4;
 	private static final Line2D[] TWENTY_LINES = {
