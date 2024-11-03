@@ -76,7 +76,8 @@ public class WildernessLinesPlugin extends Plugin
 		new Rectangle(3151, 3593, 1, 1), // SE of Ferox 2 extension 4
 		new Rectangle(3152, 3620, 10, 6), // SE of Ferox 3
 		new Rectangle(3187, 3620, 5, 28), // East of Ferox 1
-		new Rectangle(3176, 3636, 11, 12), // East of Ferox 2
+		new Rectangle(3179, 3636, 8, 4), // East of Ferox 2, south of bridge
+		new Rectangle(3176, 3640, 11, 8), // East of Ferox 2, bridge and north of bridge
 		new Rectangle(3174, 3647, 2, 1) // Two dumb tiles north of bridge east of Ferox
 	);
 	private static final int SPEAR_RANGE = 4;
