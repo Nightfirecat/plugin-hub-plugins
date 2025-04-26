@@ -90,7 +90,7 @@ class VirtualLevelUpsInterfaceInput extends ChatboxInput implements KeyListener
 			levelUpLevelString = "Congratulations, you just advanced " + prefix + skillName + " level.";
 		}
 		levelUpLevel.setText(levelUpLevelString);
-		levelUpLevel.setTextColor(Color.BLACK.getRGB());
+		levelUpLevel.setColor(new Color(0x2F2B85)); // Indigo
 		levelUpLevel.setFontId(FontID.QUILL_8);
 		levelUpLevel.setXPositionMode(WidgetPositionMode.ABSOLUTE_TOP);
 		levelUpLevel.setOriginalX(73 + X_OFFSET);
