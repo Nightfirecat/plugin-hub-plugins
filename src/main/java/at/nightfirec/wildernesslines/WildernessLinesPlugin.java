@@ -80,7 +80,7 @@ public class WildernessLinesPlugin extends Plugin
 		new Rectangle(3176, 3640, 11, 8), // East of Ferox 2, bridge and north of bridge
 		new Rectangle(3174, 3647, 2, 1) // Two dumb tiles north of bridge east of Ferox
 	);
-	private static final int SPEAR_RANGE = 4;
+	private static final int SPEAR_RANGE = 5;
 	private static final Line2D[] TWENTY_LINES = {
 		// overworld
 		new Line2D.Float(2946, 3680, 3384, 3680),
