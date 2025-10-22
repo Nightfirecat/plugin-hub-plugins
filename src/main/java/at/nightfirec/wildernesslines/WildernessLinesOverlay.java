@@ -70,18 +70,18 @@ class WildernessLinesOverlay extends Overlay
 
 		if (config.showSpearLines())
 		{
-			renderPath(graphics, plugin.getSpearLinesToDisplay(), config.spearLinesColor());
+			renderPath(graphics, plugin.getDrawPathsSpear(), config.spearLinesColor());
 		}
-		renderPath(graphics, plugin.getMultiLinesToDisplay(), config.multiLinesColor());
+		renderPath(graphics, plugin.getDrawPathsMulti(), config.multiLinesColor());
 
 		if (config.show20Line())
 		{
-			renderPath(graphics, plugin.get20LineToDisplay(), config.twentyLineColor());
+			renderPath(graphics, plugin.getDrawPaths20Lines(), config.twentyLineColor());
 		}
 
 		if (config.show30Line())
 		{
-			renderPath(graphics, plugin.get30LineToDisplay(), config.thirtyLineColor());
+			renderPath(graphics, plugin.getDrawPaths30Lines(), config.thirtyLineColor());
 		}
 
 		return null;

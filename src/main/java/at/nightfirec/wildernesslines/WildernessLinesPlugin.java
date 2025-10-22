@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2018, Woox <https://github.com/wooxsolo>
  * Copyright (c) 2021, Jordan <nightfirecat@protonmail.com>
+ * Copyright (c) 2024, tsbreuer <tsbreuer@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,7 +40,10 @@ import java.awt.geom.Line2D;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ScheduledExecutorService;
 import javax.inject.Inject;
+import lombok.AccessLevel;
+import lombok.Getter;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.Constants;
@@ -49,6 +53,7 @@ import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.CommandExecuted;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.WorldViewLoaded;
 import net.runelite.api.gameval.VarbitID;
 import net.runelite.api.geometry.Geometry;
 import net.runelite.client.config.ConfigManager;
@@ -148,6 +153,15 @@ public class WildernessLinesPlugin extends Plugin
 
 	private static final String GITHUB_REPO = "https://github.com/nightfirecat/plugin-hub-plugins";
 
+	@Getter(AccessLevel.PACKAGE)
+	private GeneralPath drawPathsMulti = new GeneralPath();
+	@Getter(AccessLevel.PACKAGE)
+	private GeneralPath drawPathsSpear = new GeneralPath();
+	@Getter(AccessLevel.PACKAGE)
+	private GeneralPath drawPaths20Lines = new GeneralPath();
+	@Getter(AccessLevel.PACKAGE)
+	private GeneralPath drawPaths30Lines = new GeneralPath();
+
 	private final Set<WorldPoint> multiAreaMismatchedPoints = new HashSet<>();
 	private WorldPoint wpLastTick;
 	private boolean alertingMultiAreaMismatch;
@@ -161,6 +175,9 @@ public class WildernessLinesPlugin extends Plugin
 
 	@Inject
 	private OverlayManager overlayManager;
+
+	@Inject
+	private ScheduledExecutorService executor;
 
 	@Inject
 	private Client client;
@@ -182,8 +199,28 @@ public class WildernessLinesPlugin extends Plugin
 	{
 		overlayManager.remove(overlay);
 
+		drawPathsMulti.reset();
+		drawPathsSpear.reset();
+		drawPaths20Lines.reset();
+		drawPaths30Lines.reset();
 		multiAreaMismatchedPoints.clear();
 		alertingMultiAreaMismatch = false;
+	}
+
+	@Subscribe
+	private void onWorldViewLoaded(WorldViewLoaded worldViewLoaded)
+	{
+		if (worldViewLoaded.getWorldView() == client.getTopLevelWorldView())
+		{
+			executor.execute(() ->
+			{
+				drawPathsMulti = getMultiLinesToDisplay();
+				drawPathsSpear = getSpearLinesToDisplay();
+				drawPaths20Lines = get20LineToDisplay();
+				drawPaths30Lines = get30LineToDisplay();
+
+			});
+		}
 	}
 
 	@Subscribe
@@ -266,22 +303,22 @@ public class WildernessLinesPlugin extends Plugin
 		coords[1] = lp.getY() - Perspective.LOCAL_TILE_SIZE / 2f;
 	}
 
-	GeneralPath getMultiLinesToDisplay()
+	private GeneralPath getMultiLinesToDisplay()
 	{
 		return getLinesToDisplay(MULTI_AREA);
 	}
 
-	GeneralPath getSpearLinesToDisplay()
+	private GeneralPath getSpearLinesToDisplay()
 	{
 		return getLinesToDisplay(SPEAR_MULTI_AREA);
 	}
 
-	GeneralPath get20LineToDisplay()
+	private GeneralPath get20LineToDisplay()
 	{
 		return getLinesToDisplay(TWENTY_LINES);
 	}
 
-	GeneralPath get30LineToDisplay()
+	private GeneralPath get30LineToDisplay()
 	{
 		return getLinesToDisplay(THIRTY_LINES);
 	}
