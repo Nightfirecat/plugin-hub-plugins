@@ -90,6 +90,18 @@ public interface WildernessLinesConfig extends Config
 		return Color.ORANGE;
 	}
 
+	@ConfigItem(
+		position = 4,
+		keyName = "multiAreaMismatchAlert",
+		name = "Mismatch alert",
+		description = "Print alert messages in the chatbox if the plugin's multi-combat zones do not match areas walked on ingame",
+		section = multiLines
+	)
+	default boolean multiAreaMismatchAlert()
+	{
+		return true;
+	}
+
 	@ConfigSection(
 		name = "Level Lines",
 		description = "",
