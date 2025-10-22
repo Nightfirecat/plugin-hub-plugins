@@ -1,6 +1,7 @@
 /*
  * Copyright (c) 2018, Woox <https://github.com/wooxsolo>
  * Copyright (c) 2021, Jordan Atwood <nightfirecat@protonmail.com>
+ * Copyright (c) 2024, tsbreuer <tsbreuer@gmail.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -96,11 +97,20 @@ class WildernessLinesOverlay extends Overlay
 		path = Geometry.filterPath(path, (p1, p2) ->
 			Perspective.localToCanvas(client, new LocalPoint((int)p1[0], (int)p1[1], topLevelWorldView), topLevelWorldView.getPlane()) != null &&
 			Perspective.localToCanvas(client, new LocalPoint((int)p2[0], (int)p2[1], topLevelWorldView), topLevelWorldView.getPlane()) != null);
+
 		path = Geometry.transformPath(path, coords ->
 		{
 			Point point = Perspective.localToCanvas(client, new LocalPoint((int)coords[0], (int)coords[1], topLevelWorldView), topLevelWorldView.getPlane());
 			coords[0] = point.getX();
 			coords[1] = point.getY();
+		});
+
+		path = Geometry.filterPath(path, (p1, p2) ->
+		{
+			// p1 within canvas
+			return (p1[0] > 0 && p1[0] < client.getCanvasWidth()) && (p1[1] > 0 && p1[1] < client.getCanvasHeight())
+				// p2 within canvas
+				|| (p2[0] > 0 && p2[0] < client.getCanvasWidth()) && (p2[1] > 0 && p2[1] < client.getCanvasHeight());
 		});
 
 		graphics.draw(path);
