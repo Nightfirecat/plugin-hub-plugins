@@ -35,8 +35,9 @@ import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.Perspective;
 import net.runelite.api.Point;
-import net.runelite.api.Varbits;
+import net.runelite.api.WorldView;
 import net.runelite.api.coords.LocalPoint;
+import net.runelite.api.gameval.VarbitID;
 import net.runelite.api.geometry.Geometry;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
@@ -61,7 +62,7 @@ class WildernessLinesOverlay extends Overlay
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-		final boolean inWilderness = client.getVarbitValue(Varbits.IN_WILDERNESS) == 1;
+		final boolean inWilderness = client.getVarbitValue(VarbitID.INSIDE_WILDERNESS) == 1;
 		if (!inWilderness && config.onlyShowInWilderness())
 		{
 			return null;
@@ -90,13 +91,14 @@ class WildernessLinesOverlay extends Overlay
 	{
 		graphics.setColor(color);
 		graphics.setStroke(new BasicStroke(1));
+		final WorldView topLevelWorldView = client.getTopLevelWorldView();
 
 		path = Geometry.filterPath(path, (p1, p2) ->
-			Perspective.localToCanvas(client, new LocalPoint((int)p1[0], (int)p1[1]), client.getPlane()) != null &&
-			Perspective.localToCanvas(client, new LocalPoint((int)p2[0], (int)p2[1]), client.getPlane()) != null);
+			Perspective.localToCanvas(client, new LocalPoint((int)p1[0], (int)p1[1], topLevelWorldView), topLevelWorldView.getPlane()) != null &&
+			Perspective.localToCanvas(client, new LocalPoint((int)p2[0], (int)p2[1], topLevelWorldView), topLevelWorldView.getPlane()) != null);
 		path = Geometry.transformPath(path, coords ->
 		{
-			Point point = Perspective.localToCanvas(client, new LocalPoint((int)coords[0], (int)coords[1]), client.getPlane());
+			Point point = Perspective.localToCanvas(client, new LocalPoint((int)coords[0], (int)coords[1], topLevelWorldView), topLevelWorldView.getPlane());
 			coords[0] = point.getX();
 			coords[1] = point.getY();
 		});

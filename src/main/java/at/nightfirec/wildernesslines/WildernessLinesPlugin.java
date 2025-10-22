@@ -37,7 +37,9 @@ import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.Constants;
 import net.runelite.api.Perspective;
+import net.runelite.api.WorldView;
 import net.runelite.api.coords.LocalPoint;
+import net.runelite.api.gameval.VarbitID;
 import net.runelite.api.geometry.Geometry;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.plugins.Plugin;
@@ -160,7 +162,7 @@ public class WildernessLinesPlugin extends Plugin
 
 	private void transformWorldToLocal(float[] coords)
 	{
-		final LocalPoint lp = LocalPoint.fromWorld(client, (int)coords[0], (int)coords[1]);
+		final LocalPoint lp = LocalPoint.fromWorld(client.getTopLevelWorldView(), (int)coords[0], (int)coords[1]);
 		coords[0] = lp.getX() - Perspective.LOCAL_TILE_SIZE / 2f;
 		coords[1] = lp.getY() - Perspective.LOCAL_TILE_SIZE / 2f;
 	}
@@ -187,8 +189,9 @@ public class WildernessLinesPlugin extends Plugin
 
 	private GeneralPath getLinesToDisplay(final Shape... shapes)
 	{
+		final WorldView topLevelWorldView = client.getTopLevelWorldView();
 		final Rectangle sceneRect = new Rectangle(
-			client.getBaseX() + 1, client.getBaseY() + 1,
+			topLevelWorldView.getBaseX() + 1, topLevelWorldView.getBaseY() + 1,
 			Constants.SCENE_SIZE - 2, Constants.SCENE_SIZE - 2);
 
 		final GeneralPath paths = new GeneralPath();
