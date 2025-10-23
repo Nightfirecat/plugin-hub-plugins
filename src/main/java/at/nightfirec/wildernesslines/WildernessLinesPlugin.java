@@ -99,7 +99,8 @@ public class WildernessLinesPlugin extends Plugin
 		new Rectangle(3187, 3620, 5, 28), // East of Ferox 1
 		new Rectangle(3179, 3636, 8, 4), // East of Ferox 2, south of bridge
 		new Rectangle(3176, 3640, 11, 8), // East of Ferox 2, bridge and north of bridge
-		new Rectangle(3174, 3647, 2, 1) // Two dumb tiles north of bridge east of Ferox
+		new Rectangle(3174, 3647, 2, 1), // Two dumb tiles north of bridge east of Ferox
+		new Rectangle(3264, 10048, 192, 320) // Slayer dungeon, Vet'ion, Venenatis, Callisto, and escape caves
 	);
 	private static final int SPEAR_RANGE = 5;
 	private static final Line2D[] TWENTY_LINES = {
