@@ -71,6 +71,7 @@ import net.runelite.client.util.LinkBrowser;
 )
 public class WildernessLinesPlugin extends Plugin
 {
+	private static final Area WILDERNESS = new Area(new Rectangle(2941, 3522, 528, 471));
 	private static final List<Rectangle> WILDERNESS_MULTI_AREAS = ImmutableList.of(
 		new Rectangle(3008, 3600, 64, 112), // Dark warrior's palace
 		new Rectangle(3072, 3654, 1, 2), // Two tiles next to southern rev caves entrance which used to be a BH "singles" lure spot
@@ -311,12 +312,12 @@ public class WildernessLinesPlugin extends Plugin
 
 	private GeneralPath getMultiLinesToDisplay()
 	{
-		return getLinesToDisplay(MULTI_AREA);
+		return getLinesToDisplay(filterUndergroundAreas(MULTI_AREA));
 	}
 
 	private GeneralPath getSpearLinesToDisplay()
 	{
-		return getLinesToDisplay(SPEAR_MULTI_AREA);
+		return getLinesToDisplay(filterUndergroundAreas(SPEAR_MULTI_AREA));
 	}
 
 	private GeneralPath get20LineToDisplay()
@@ -346,5 +347,19 @@ public class WildernessLinesPlugin extends Plugin
 			paths.append(lines, false);
 		}
 		return paths;
+	}
+
+	/**
+	 * Subtracts all area appearing in the underground (i.e. above {@code Constants.OVERWORLD_MAX_Y}) from the given
+	 * area.
+	 *
+	 * @param area An {@link Area}, such as that representing multi-combat zones.
+	 * @return A new {@link Area} with underground geometry omitted.
+	 */
+	private static Area filterUndergroundAreas(final Area area)
+	{
+		final Area newArea = (Area) area.clone();
+		newArea.intersect(WILDERNESS);
+		return newArea;
 	}
 }
