@@ -104,6 +104,7 @@ public class WildernessLinesPlugin extends Plugin
 		new Rectangle(3218, 10330, 31, 24) // Scorpia's cave
 	);
 	private static final int SPEAR_RANGE = 5;
+	private static final Area AGILITY_COURSE_BRIDGE = new Area(new Rectangle(2998, 3917, 1, 14));
 	private static final Line2D[] TWENTY_LINES = {
 		// overworld
 		new Line2D.Float(2946, 3680, 3384, 3680),
@@ -244,7 +245,11 @@ public class WildernessLinesPlugin extends Plugin
 				final boolean inMultiCombat = client.getVarbitValue(VarbitID.MULTIWAY_INDICATOR) == 1;
 				final Point location = new Point(wpLastTick.getX(), wpLastTick.getY());
 
-				final boolean areaMismatch = inMultiCombat ^ MULTI_AREA.contains(location);
+				final boolean areaMismatch = (inMultiCombat ^ MULTI_AREA.contains(location))
+					// When walking on the Wilderness agility course bridge, the multi-combat indicator does not change
+					// until you've either fallen off (which moves you 3 tiles, therefore is guarded above) or reached
+					// the other end of the bridge. Hence, do not warn for this area.
+					&& !AGILITY_COURSE_BRIDGE.contains(location);
 				if (areaMismatch)
 				{
 					multiAreaMismatchedPoints.add(wpLastTick);
