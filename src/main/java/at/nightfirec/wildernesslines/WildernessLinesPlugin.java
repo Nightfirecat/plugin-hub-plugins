@@ -230,7 +230,13 @@ public class WildernessLinesPlugin extends Plugin
 		{
 			final WorldPoint currentWp = client.getLocalPlayer().getWorldLocation();
 
-			if (wpLastTick != null)
+			if (wpLastTick != null
+				// Some teleports, such as the Royal seed pod, have entrance animations which preserve var values until
+				// the animation completes. Due to that, it is most practical to avoid tracking movement over more than
+				// 2 tiles at once, as it is a teleport and not valid for consideration. This also should remove a class
+				// of bugs where you could teleport from low wilderness to another area in the wilderness with a
+				// change of multi-combat status.
+				&& currentWp.distanceTo(wpLastTick) <= 2)
 			{
 				final boolean inMultiCombat = client.getVarbitValue(VarbitID.MULTIWAY_INDICATOR) == 1;
 				final Point location = new Point(wpLastTick.getX(), wpLastTick.getY());
