@@ -101,7 +101,8 @@ public class WildernessLinesPlugin extends Plugin
 		new Rectangle(3176, 3640, 11, 8), // East of Ferox 2, bridge and north of bridge
 		new Rectangle(3174, 3647, 2, 1), // Two dumb tiles north of bridge east of Ferox
 		new Rectangle(3264, 10048, 192, 320), // Slayer dungeon, Vet'ion, Venenatis, Callisto, and escape caves
-		new Rectangle(3218, 10330, 31, 24) // Scorpia's cave
+		new Rectangle(3218, 10330, 31, 24), // Scorpia's cave
+		new Rectangle(3008, 10112, 64, 64) // Wilderness God Wars Dungeon
 	);
 	private static final int SPEAR_RANGE = 5;
 	private static final Area AGILITY_COURSE_BRIDGE = new Area(new Rectangle(2998, 3917, 1, 14));
