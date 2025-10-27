@@ -105,7 +105,8 @@ public class WildernessLinesPlugin extends Plugin
 		new Rectangle(3008, 10112, 64, 64) // Wilderness God Wars Dungeon
 	);
 	private static final int SPEAR_RANGE = 5;
-	private static final Area AGILITY_COURSE_BRIDGE = new Area(new Rectangle(2998, 3917, 1, 14));
+	private static final Rectangle AGILITY_COURSE_BRIDGE = new Rectangle(2998, 3917, 1, 14);
+	private static final Rectangle NORTH_LAVA_MAZE_SHORTCUT = new Rectangle(3092, 3880, 1, 1);
 	private static final Line2D[] TWENTY_LINES = {
 		// overworld
 		new Line2D.Float(2946, 3680, 3384, 3680),
@@ -141,6 +142,7 @@ public class WildernessLinesPlugin extends Plugin
 
 	private static final Area MULTI_AREA = new Area();
 	private static final Area SPEAR_MULTI_AREA = new Area();
+	private static final Area FORCE_MOVE_IGNORE_AREA = new Area();
 
 	static
 	{
@@ -154,6 +156,9 @@ public class WildernessLinesPlugin extends Plugin
 				SPEAR_MULTI_AREA.add(new Area(spearArea));
 			}
 		}
+
+		FORCE_MOVE_IGNORE_AREA.add(new Area(AGILITY_COURSE_BRIDGE));
+		FORCE_MOVE_IGNORE_AREA.add(new Area(NORTH_LAVA_MAZE_SHORTCUT));
 	}
 
 	private static final String GITHUB_REPO = "https://github.com/nightfirecat/plugin-hub-plugins";
@@ -247,10 +252,11 @@ public class WildernessLinesPlugin extends Plugin
 				final Point location = new Point(wpLastTick.getX(), wpLastTick.getY());
 
 				final boolean areaMismatch = (inMultiCombat ^ MULTI_AREA.contains(location))
-					// When walking on the Wilderness agility course bridge, the multi-combat indicator does not change
-					// until you've either fallen off (which moves you 3 tiles, therefore is guarded above) or reached
-					// the other end of the bridge. Hence, do not warn for this area.
-					&& !AGILITY_COURSE_BRIDGE.contains(location);
+					// When crossing several force-move areas such as the wilderness agility course bridge, north lava
+					// maze shortcut, etc., the multi-combat indicator does not change until you've either fallen off
+					// (which typically moves you more than 2 tiles, therefore is guarded above) or reached the other
+					// side. Hence, do not warn for such areas.
+					&& !FORCE_MOVE_IGNORE_AREA.contains(location);
 				if (areaMismatch)
 				{
 					multiAreaMismatchedPoints.add(wpLastTick);
