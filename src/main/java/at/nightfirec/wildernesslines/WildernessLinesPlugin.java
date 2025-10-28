@@ -109,6 +109,7 @@ public class WildernessLinesPlugin extends Plugin
 	private static final int SPEAR_RANGE = 5;
 	private static final Rectangle AGILITY_COURSE_BRIDGE = new Rectangle(2998, 3917, 1, 14);
 	private static final Rectangle NORTH_LAVA_MAZE_SHORTCUT = new Rectangle(3092, 3880, 1, 1);
+	private static final Rectangle SEED_POD_TELE_TILE = new Rectangle(2465, 3495, 1, 1);
 	private static final Line2D[] TWENTY_LINES = {
 		// overworld
 		new Line2D.Float(2946, 3680, 3384, 3680),
@@ -161,6 +162,7 @@ public class WildernessLinesPlugin extends Plugin
 
 		FORCE_MOVE_IGNORE_AREA.add(new Area(AGILITY_COURSE_BRIDGE));
 		FORCE_MOVE_IGNORE_AREA.add(new Area(NORTH_LAVA_MAZE_SHORTCUT));
+		FORCE_MOVE_IGNORE_AREA.add(new Area(SEED_POD_TELE_TILE));
 	}
 
 	private static final String GITHUB_REPO = "https://github.com/nightfirecat/plugin-hub-plugins";
