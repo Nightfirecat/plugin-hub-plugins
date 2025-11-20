@@ -27,14 +27,16 @@ package at.nightfirec.virtuallevelups;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.runelite.api.Skill;
 
+@AllArgsConstructor
 @Getter
 enum SkillModel
 {
-	CONSTRUCTION1(Skill.CONSTRUCTION, ModelID.HAMMER, 10, 14, 669, 0, 15, 329),
-	CONSTRUCTION2(Skill.CONSTRUCTION, ModelID.SAW, 11, 14, 615, 0, 111, 451),
+	CONSTRUCTION1(Skill.CONSTRUCTION, ModelID.HAMMER, 10, 14, 669, 0, 15, 329, 49, 61),
+	CONSTRUCTION2(Skill.CONSTRUCTION, ModelID.SAW, 11, 14, 615, 0, 111, 451, 49, 61),
 	COOKING(Skill.COOKING, ModelID.COOKING_SKILL_MODEL, 31, 59, 169, 0, 1593, 963),
 	CRAFTING1(Skill.CRAFTING, ModelID.HAMMER, 30, 24, 418, 0, 14, 496),
 	CRAFTING2(Skill.CRAFTING, ModelID.CHISEL, 39, 45, 353, 0, 18, 400),
@@ -77,16 +79,7 @@ enum SkillModel
 
 	SkillModel(Skill skill, int modelID, int originalX, int originalY, int rotationX, int rotationY, int rotationZ, int modelZoom)
 	{
-		this.skill = skill;
-		this.modelID = modelID;
-		this.originalX = originalX;
-		this.originalY = originalY;
-		this.rotationX = rotationX;
-		this.rotationY = rotationY;
-		this.rotationZ = rotationZ;
-		this.modelZoom = modelZoom;
-		this.iconWidth = skill == Skill.CONSTRUCTION ? 49 : 32;
-		this.iconHeight = skill == Skill.CONSTRUCTION ? 61 : 32;
+		this(skill, modelID, originalX, originalY, rotationX, rotationY, rotationZ, modelZoom, 32, 32);
 	}
 
 	static
