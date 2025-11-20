@@ -75,10 +75,6 @@ public class VirtualLevelUpsPluginTest
 
 	@Mock
 	@Bind
-	private OverlayManager overlayManager;
-
-	@Mock
-	@Bind
 	private Client client;
 
 	@Mock
@@ -92,10 +88,6 @@ public class VirtualLevelUpsPluginTest
 	@Mock
 	@Bind
 	private VirtualLevelUpsConfig config;
-
-	@Mock
-	@Bind
-	private SpriteManager spriteManager;
 
 	@Mock
 	@Bind

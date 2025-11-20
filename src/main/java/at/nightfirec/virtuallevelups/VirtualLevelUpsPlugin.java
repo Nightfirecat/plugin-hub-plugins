@@ -29,10 +29,15 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Provides;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
 import javax.inject.Inject;
@@ -43,21 +48,21 @@ import net.runelite.api.Client;
 import net.runelite.api.Experience;
 import net.runelite.api.GameState;
 import net.runelite.api.Skill;
-import net.runelite.api.SpriteID;
+import net.runelite.api.events.PostClientTick;
 import net.runelite.api.events.StatChanged;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.MenuOptionClicked;
+import net.runelite.api.gameval.InterfaceID;
+import net.runelite.api.widgets.Widget;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.chat.ChatMessageManager;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
-import net.runelite.client.game.SpriteManager;
 import net.runelite.client.game.chatbox.ChatboxPanelManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.DrawManager;
-import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ImageCapture;
 import net.runelite.client.util.ImageUtil;
 
@@ -92,15 +97,6 @@ public class VirtualLevelUpsPlugin extends Plugin
 	private VirtualLevelUpsConfig config;
 
 	@Inject
-	private OverlayManager overlayManager;
-
-	@Inject
-	private VirtualLevelUpsOverlay overlay;
-
-	@Inject
-	private SpriteManager spriteManager;
-
-	@Inject
 	private ScheduledExecutorService executor;
 
 	@Inject
@@ -110,8 +106,10 @@ public class VirtualLevelUpsPlugin extends Plugin
 	@Inject
 	private ChatMessageManager chatMessageManager;
 
-	@Getter(AccessLevel.PACKAGE)
-	private BufferedImage reportButton;
+	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("MMM. dd, yyyy");
+
+	private final Queue<Consumer<Image>> consumers = new ConcurrentLinkedQueue<>();
+	private String reportButtonText;
 
 	private final Map<Skill, Integer> previousXpMap = new EnumMap<>(Skill.class);
 	@VisibleForTesting
@@ -130,16 +128,11 @@ public class VirtualLevelUpsPlugin extends Plugin
 	public void startUp()
 	{
 		clientThread.invoke(this::initializePreviousXpMap);
-
-		overlayManager.add(overlay);
-		spriteManager.getSpriteAsync(SpriteID.CHATBOX_REPORT_BUTTON, 0, s -> reportButton = s);
 	}
 
 	@Override
 	public void shutDown()
 	{
-		overlayManager.remove(overlay);
-
 		if (input != null && chatboxPanelManager.getCurrentInput() == input)
 		{
 			chatboxPanelManager.close();
@@ -218,6 +211,30 @@ public class VirtualLevelUpsPlugin extends Plugin
 		chatboxPanelManager.openInput(input);
 	}
 
+	@Subscribe
+	private void onPostClientTick(PostClientTick e)
+	{
+		if (!consumers.isEmpty())
+		{
+			final Widget reportButtonTextWidget = client.getWidget(InterfaceID.Chatbox.REPORTABUSE_TEXT1);
+			if (reportButtonTextWidget != null)
+			{
+				if (reportButtonText == null)
+				{
+					reportButtonText = reportButtonTextWidget.getText();
+				}
+
+				reportButtonTextWidget.setText(DATE_FORMAT.format(new Date()));
+			}
+		}
+
+		Consumer<Image> consumer;
+		while ((consumer = consumers.poll()) != null)
+		{
+			drawManager.requestNextFrameListener(consumer);
+		}
+	}
+
 	private void initializePreviousXpMap()
 	{
 		if (client.getGameState() != GameState.LOGGED_IN)
@@ -258,17 +275,39 @@ public class VirtualLevelUpsPlugin extends Plugin
 		Consumer<Image> imageCallback = (img) ->
 		{
 			// This callback is on the game thread, move to the executor thread
-			executor.submit(() -> takeScreenshot(fileName, subDir, img));
+			executor.submit(() ->
+			{
+				takeScreenshot(fileName, subDir, img);
+
+				if (reportButtonText != null)
+				{
+					clientThread.invokeLater(() ->
+					{
+						final Widget reportButtonTextWidget = client.getWidget(InterfaceID.Chatbox.REPORTABUSE_TEXT1);
+						if (reportButtonTextWidget != null)
+						{
+							reportButtonTextWidget.setText(reportButtonText);
+						}
+
+						reportButtonText = null;
+					});
+				}
+			});
 		};
 
 		if (configManager.getConfiguration("screenshot", "displayDate").equals("true"))
 		{
-			overlay.queueForTimestamp(imageCallback);
+			queueForTimestamp(imageCallback);
 		}
 		else
 		{
 			drawManager.requestNextFrameListener(imageCallback);
 		}
+	}
+
+	void queueForTimestamp(final Consumer<Image> screenshotConsumer)
+	{
+		consumers.add(screenshotConsumer);
 	}
 
 	void takeScreenshot(String fileName, String subDir, Image image)
