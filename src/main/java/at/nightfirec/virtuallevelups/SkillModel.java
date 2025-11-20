@@ -62,7 +62,9 @@ enum SkillModel
 	WOODCUTTING(Skill.WOODCUTTING, ModelID.WILLOW_TREE, 20, 69, 116, 0, 1978, 1800),
 	ATTACK1(Skill.ATTACK, ModelID.STEEL_SWORD, 65, 38, 234, 0, 148, 444),
 	ATTACK2(Skill.ATTACK, ModelID.STEEL_LONGSWORD, 27, 29, 198, 0, 1419, 330),
-	HUNTER(Skill.HUNTER, ModelID.FOOTPRINT, 45, 48, 512, 0, 0, 1000);
+	HUNTER(Skill.HUNTER, ModelID.FOOTPRINT, 45, 48, 512, 0, 0, 1000),
+	SAILING(Skill.SAILING, ModelID.SAILING_ANCHOR, 10, 16, 474, 0, 0, 250, 67, 76),
+	;
 
 	private static final ListMultimap<Skill, SkillModel> SKILL_MODELS =  ArrayListMultimap.create();
 

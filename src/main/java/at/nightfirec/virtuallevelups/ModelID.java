@@ -51,4 +51,5 @@ final class ModelID
 	static final int SAW = 12309;
 	static final int FOOTPRINT = 19980;
 	static final int COOKING_SKILL_MODEL = 27611;
+	static final int SAILING_ANCHOR = 20841;
 }

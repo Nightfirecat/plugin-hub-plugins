@@ -29,6 +29,8 @@ import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.testing.fieldbinder.Bind;
 import com.google.inject.testing.fieldbinder.BoundFieldModule;
+import java.util.EnumSet;
+import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 import net.runelite.api.Client;
 import net.runelite.api.Experience;
@@ -222,6 +224,18 @@ public class VirtualLevelUpsPluginTest
 
 		assertEquals(1, plugin.getSkillsLeveledUp().size());
 		assertTrue(plugin.getSkillsLeveledUp().contains(SKILL));
+	}
+
+	@Test
+	public void testSkillModelExhaustiveness()
+	{
+		final Set<Skill> modelSkills = EnumSet.noneOf(Skill.class);
+		for (final SkillModel skillModel : SkillModel.values())
+		{
+			modelSkills.add(skillModel.getSkill());
+		}
+
+		assertEquals(Set.of(Skill.values()), modelSkills);
 	}
 
 	private void statChanged(final Skill skill, final int xp, final int level)
