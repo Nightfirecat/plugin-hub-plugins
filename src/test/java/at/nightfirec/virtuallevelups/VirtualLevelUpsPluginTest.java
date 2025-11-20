@@ -39,13 +39,12 @@ import net.runelite.api.GameState;
 import net.runelite.api.Skill;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.StatChanged;
-import net.runelite.client.Notifier;
 import net.runelite.client.RuneLite;
+import net.runelite.client.chat.ChatMessageManager;
 import net.runelite.client.config.ConfigManager;
-import net.runelite.client.config.RuneLiteConfig;
 import net.runelite.client.externalplugins.ExternalPluginManager;
+import net.runelite.client.game.SpriteManager;
 import net.runelite.client.game.chatbox.ChatboxPanelManager;
-import net.runelite.client.ui.ClientUI;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ImageCapture;
 import static org.junit.Assert.assertEquals;
@@ -61,9 +60,9 @@ import org.mockito.junit.MockitoJUnitRunner;
 public class VirtualLevelUpsPluginTest
 {
 	private static final Skill SKILL = Skill.HITPOINTS;
-	private static GameStateChanged HOPPING = new GameStateChanged();
-	private static GameStateChanged LOADING = new GameStateChanged();
-	private static GameStateChanged LOGGED_IN = new GameStateChanged();
+	private static final GameStateChanged HOPPING = new GameStateChanged();
+	private static final GameStateChanged LOADING = new GameStateChanged();
+	private static final GameStateChanged LOGGED_IN = new GameStateChanged();
 
 	@Inject
 	private VirtualLevelUpsPlugin plugin;
@@ -71,10 +70,6 @@ public class VirtualLevelUpsPluginTest
 	@Mock
 	@Bind
 	private ImageCapture imageCapture;
-
-	@Mock
-	@Bind
-	private ClientUI clientUI;
 
 	@Mock
 	@Bind
@@ -90,15 +85,7 @@ public class VirtualLevelUpsPluginTest
 
 	@Mock
 	@Bind
-	private Notifier notifier;
-
-	@Mock
-	@Bind
 	private ConfigManager configManager;
-
-	@Mock
-	@Bind
-	private RuneLiteConfig runeLiteConfig;
 
 	@Mock
 	@Bind
@@ -106,7 +93,15 @@ public class VirtualLevelUpsPluginTest
 
 	@Mock
 	@Bind
+	private SpriteManager spriteManager;
+
+	@Mock
+	@Bind
 	private ScheduledExecutorService executor;
+
+	@Mock
+	@Bind
+	private ChatMessageManager chatMessageManager;
 
 	static {
 		HOPPING.setGameState(GameState.HOPPING);
