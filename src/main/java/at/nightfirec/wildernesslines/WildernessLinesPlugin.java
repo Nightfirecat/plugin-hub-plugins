@@ -267,11 +267,11 @@ public class WildernessLinesPlugin extends Plugin
 				}
 
 				final boolean shouldAlert = areaMismatch && config.multiAreaMismatchAlert();
-				if (shouldAlert && !alertingMultiAreaMismatch)
-				{
-					client.addChatMessage(ChatMessageType.PUBLICCHAT, "Wilderness Lines", ColorUtil.prependColorTag("Encountered unexpected multi-combat areas", Color.RED), "");
-					client.addChatMessage(ChatMessageType.PUBLICCHAT, "Wilderness Lines", "Please type '::reportUnexpectedAreas' to report this bug to " + GITHUB_REPO, "");
-				}
+//				if (shouldAlert && !alertingMultiAreaMismatch)
+//				{
+//					client.addChatMessage(ChatMessageType.PUBLICCHAT, "Wilderness Lines", ColorUtil.prependColorTag("Encountered unexpected multi-combat areas", Color.RED), "");
+//					client.addChatMessage(ChatMessageType.PUBLICCHAT, "Wilderness Lines", "Please type '::reportUnexpectedAreas' to report this bug to " + GITHUB_REPO, "");
+//				}
 
 				alertingMultiAreaMismatch = shouldAlert;
 			}

@@ -95,7 +95,8 @@ public interface WildernessLinesConfig extends Config
 		keyName = "multiAreaMismatchAlert",
 		name = "Mismatch alert",
 		description = "Print alert messages in the chatbox if the plugin's multi-combat zones do not match areas walked on ingame",
-		section = multiLines
+		section = multiLines,
+		hidden = true
 	)
 	default boolean multiAreaMismatchAlert()
 	{
