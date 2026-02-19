@@ -44,9 +44,11 @@ import javax.inject.Inject;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.Experience;
 import net.runelite.api.GameState;
+import net.runelite.api.Player;
 import net.runelite.api.Skill;
 import net.runelite.api.events.PostClientTick;
 import net.runelite.api.events.StatChanged;
@@ -57,6 +59,7 @@ import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.chat.ChatMessageManager;
+import net.runelite.client.chat.QueuedMessage;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.chatbox.ChatboxPanelManager;
@@ -208,9 +211,7 @@ public class VirtualLevelUpsPlugin extends Plugin
 		}
 
 		final Skill skill = skillsLeveledUp.remove(0);
-
-		input = new VirtualLevelUpsInterfaceInput(this, skill);
-		chatboxPanelManager.openInput(input);
+		simulateLevelUp(skill);
 	}
 
 	@Subscribe
@@ -250,6 +251,47 @@ public class VirtualLevelUpsPlugin extends Plugin
 				previousXpMap.put(skill, client.getSkillExperience(skill));
 			}
 		}
+	}
+
+	private void simulateLevelUp(final Skill skill)
+	{
+		final String skillName = skill.getName();
+		final int skillExperience = client.getSkillExperience(skill);
+		final int skillLevel = Experience.getLevelForXp(skillExperience);
+
+		// TODO: add sound event for level-up (need to find sound IDs)
+
+		clientThread.invoke(this::setFireworksGraphic);
+
+		chatMessageManager.queue(QueuedMessage.builder()
+			.type(ChatMessageType.GAMEMESSAGE)
+			.runeLiteFormattedMessage(skillExperience == Experience.MAX_SKILL_XP
+				? "Congratulations, you've just reached max experience in " + skillName + '!'
+				: "Congratulations, you've just advanced your " + skillName + " level. You are now virtual level " + skillLevel + '.')
+			.build());
+
+		input = new VirtualLevelUpsInterfaceInput(this, skill);
+		chatboxPanelManager.openInput(input);
+
+		takeScreenshot(skill);
+	}
+
+	private void setFireworksGraphic()
+	{
+		final Player localPlayer = client.getLocalPlayer();
+		if (localPlayer == null)
+		{
+			return;
+		}
+
+		final int fireworksGraphic = getConfig().showFireworks().getGraphicId();
+
+		if (fireworksGraphic == -1)
+		{
+			return;
+		}
+
+		localPlayer.createSpotAnim(0, fireworksGraphic, 0, 0);
 	}
 
 	void takeScreenshot(final Skill skill)
@@ -311,7 +353,7 @@ public class VirtualLevelUpsPlugin extends Plugin
 		consumers.add(screenshotConsumer);
 	}
 
-	void takeScreenshot(String fileName, Image image)
+	private void takeScreenshot(String fileName, Image image)
 	{
 		final boolean includeFrame = configManager.getConfiguration("screenshot", "includeFrame").equals("true");
 

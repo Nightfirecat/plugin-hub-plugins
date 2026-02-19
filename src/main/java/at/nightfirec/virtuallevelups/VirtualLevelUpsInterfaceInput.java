@@ -29,10 +29,8 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.List;
 import lombok.Getter;
-import net.runelite.api.ChatMessageType;
 import net.runelite.api.Experience;
 import net.runelite.api.FontID;
-import net.runelite.api.Player;
 import net.runelite.api.Skill;
 import net.runelite.api.widgets.ComponentID;
 import net.runelite.api.widgets.JavaScriptCallback;
@@ -41,7 +39,6 @@ import net.runelite.api.widgets.WidgetPositionMode;
 import net.runelite.api.widgets.WidgetSizeMode;
 import net.runelite.api.widgets.WidgetTextAlignment;
 import net.runelite.api.widgets.WidgetType;
-import net.runelite.client.chat.QueuedMessage;
 import net.runelite.client.game.chatbox.ChatboxInput;
 import net.runelite.client.input.KeyListener;
 
@@ -65,9 +62,6 @@ class VirtualLevelUpsInterfaceInput extends ChatboxInput implements KeyListener
 	@Override
 	public void open()
 	{
-		// TODO: add sound event for level-up (need to find sound IDs)
-		plugin.getClientThread().invoke(this::setFireworksGraphic);
-
 		final Widget chatboxContainer = plugin.getChatboxPanelManager().getContainerWidget();
 
 		final String skillName = skill.getName();
@@ -151,15 +145,6 @@ class VirtualLevelUpsInterfaceInput extends ChatboxInput implements KeyListener
 		{
 			buildWidgetModel(chatboxContainer, skillModel);
 		}
-
-		plugin.takeScreenshot(skill);
-
-		plugin.getChatMessageManager().queue(QueuedMessage.builder()
-			.type(ChatMessageType.GAMEMESSAGE)
-			.runeLiteFormattedMessage(skillExperience == Experience.MAX_SKILL_XP
-				? "Congratulations, you've just reached max experience in " + skillName + '!'
-				: "Congratulations, you've just advanced your " + skillName + " level. You are now virtual level " + skillLevel + '.')
-			.build());
 	}
 
 	@Override
@@ -224,21 +209,4 @@ class VirtualLevelUpsInterfaceInput extends ChatboxInput implements KeyListener
 		levelUpModel.revalidate();
 	}
 
-	private void setFireworksGraphic()
-	{
-		final Player localPlayer = plugin.getClient().getLocalPlayer();
-		if (localPlayer == null)
-		{
-			return;
-		}
-
-		final int fireworksGraphic = plugin.getConfig().showFireworks().getGraphicId();
-
-		if (fireworksGraphic == -1)
-		{
-			return;
-		}
-
-		localPlayer.createSpotAnim(0, fireworksGraphic, 0, 0);
-	}
 }
