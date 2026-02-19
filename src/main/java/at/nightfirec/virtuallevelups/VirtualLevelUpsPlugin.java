@@ -56,6 +56,7 @@ import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.GameTick;
 import net.runelite.api.events.MenuOptionClicked;
 import net.runelite.api.gameval.InterfaceID;
+import net.runelite.api.gameval.VarbitID;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.chat.ChatMessageManager;
@@ -270,8 +271,11 @@ public class VirtualLevelUpsPlugin extends Plugin
 				: "Congratulations, you've just advanced your " + skillName + " level. You are now virtual level " + skillLevel + '.')
 			.build());
 
-		input = new VirtualLevelUpsInterfaceInput(this, skill);
-		chatboxPanelManager.openInput(input);
+		if (client.getVarbitValue(VarbitID.OPTION_LEVEL_UP_MESSAGE) == 1)
+		{
+			input = new VirtualLevelUpsInterfaceInput(this, skill);
+			chatboxPanelManager.openInput(input);
+		}
 
 		takeScreenshot(skill);
 	}
