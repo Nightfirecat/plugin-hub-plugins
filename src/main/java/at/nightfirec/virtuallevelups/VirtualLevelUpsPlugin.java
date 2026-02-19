@@ -143,7 +143,8 @@ public class VirtualLevelUpsPlugin extends Plugin
 	}
 
 	@Subscribe
-	public void onGameStateChanged(GameStateChanged event)
+	@VisibleForTesting
+	void onGameStateChanged(GameStateChanged event)
 	{
 		switch(event.getGameState())
 		{
@@ -156,7 +157,8 @@ public class VirtualLevelUpsPlugin extends Plugin
 	}
 
 	@Subscribe
-	public void onStatChanged(StatChanged event)
+	@VisibleForTesting
+	void onStatChanged(StatChanged event)
 	{
 		final Skill skill = event.getSkill();
 
@@ -184,7 +186,7 @@ public class VirtualLevelUpsPlugin extends Plugin
 	}
 
 	@Subscribe
-	public void onMenuOptionClicked(MenuOptionClicked event)
+	private void onMenuOptionClicked(MenuOptionClicked event)
 	{
 		if (input != null)
 		{
@@ -193,7 +195,7 @@ public class VirtualLevelUpsPlugin extends Plugin
 	}
 
 	@Subscribe
-	public void onGameTick(GameTick event)
+	private void onGameTick(GameTick event)
 	{
 		if (input != null)
 		{
@@ -305,7 +307,7 @@ public class VirtualLevelUpsPlugin extends Plugin
 		}
 	}
 
-	void queueForTimestamp(final Consumer<Image> screenshotConsumer)
+	private void queueForTimestamp(final Consumer<Image> screenshotConsumer)
 	{
 		consumers.add(screenshotConsumer);
 	}
