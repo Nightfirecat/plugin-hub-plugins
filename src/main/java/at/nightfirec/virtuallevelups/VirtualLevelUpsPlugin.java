@@ -272,14 +272,13 @@ public class VirtualLevelUpsPlugin extends Plugin
 		}
 
 		final String fileName = skill.getName() + '(' + skillLevel + ')';
-		final String subDir = "Levels";
 
 		Consumer<Image> imageCallback = (img) ->
 		{
 			// This callback is on the game thread, move to the executor thread
 			executor.submit(() ->
 			{
-				takeScreenshot(fileName, subDir, img);
+				takeScreenshot(fileName, img);
 
 				if (reportButtonText != null)
 				{
@@ -312,7 +311,7 @@ public class VirtualLevelUpsPlugin extends Plugin
 		consumers.add(screenshotConsumer);
 	}
 
-	void takeScreenshot(String fileName, String subDir, Image image)
+	void takeScreenshot(String fileName, Image image)
 	{
 		final boolean includeFrame = configManager.getConfiguration("screenshot", "includeFrame").equals("true");
 
@@ -329,7 +328,7 @@ public class VirtualLevelUpsPlugin extends Plugin
 		imageCapture.saveScreenshot(
 			screenshot,
 			fileName,
-			subDir,
+			"Levels",
 			configManager.getConfiguration("screenshot", "notifyWhenTaken").equals("true"),
 			false);
 	}
