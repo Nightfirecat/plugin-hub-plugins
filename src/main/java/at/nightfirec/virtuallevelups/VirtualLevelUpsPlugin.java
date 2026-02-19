@@ -175,7 +175,7 @@ public class VirtualLevelUpsPlugin extends Plugin
 		//  * xpBefore >= xpAfter          (do not allow 200m -> 200m exp drops)
 		//  * levelAfter <= MAX_REAL_LEVEL (we don't care about real level ups)
 		//    * xpAfter != 200m _and_      (unless we're reaching 200m exp for the first time...)
-		//    * levelBefore >= levelAfter  (stop if if we're not actually reaching a virtual level)
+		//    * levelBefore >= levelAfter  (stop if we're not actually reaching a virtual level)
 		if (xpBefore == -1 || levelAfter <= Experience.MAX_REAL_LEVEL || xpAfter <= xpBefore
 			|| (xpAfter != Experience.MAX_SKILL_XP && levelBefore >= levelAfter))
 		{
