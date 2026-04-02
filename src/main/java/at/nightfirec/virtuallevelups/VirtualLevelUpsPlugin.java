@@ -271,7 +271,7 @@ public class VirtualLevelUpsPlugin extends Plugin
 				: "Congratulations, you've just advanced your " + skillName + " level. You are now virtual level " + skillLevel + '.')
 			.build());
 
-		if (client.getVarbitValue(VarbitID.OPTION_LEVEL_UP_MESSAGE_DISABLED) == 1)
+		if (client.getVarbitValue(VarbitID.OPTION_LEVEL_UP_MESSAGE_DISABLED) == 0)
 		{
 			input = new VirtualLevelUpsInterfaceInput(this, skill);
 			chatboxPanelManager.openInput(input);
