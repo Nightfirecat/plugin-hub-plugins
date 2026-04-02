@@ -42,7 +42,6 @@ import net.runelite.api.Skill;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.StatChanged;
 import net.runelite.client.RuneLite;
-import net.runelite.client.chat.ChatMessageManager;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.externalplugins.ExternalPluginManager;
 import net.runelite.client.game.chatbox.ChatboxPanelManager;
@@ -90,10 +89,6 @@ public class VirtualLevelUpsPluginTest
 	@Mock
 	@Bind
 	private ScheduledExecutorService executor;
-
-	@Mock
-	@Bind
-	private ChatMessageManager chatMessageManager;
 
 	static {
 		HOPPING.setGameState(GameState.HOPPING);

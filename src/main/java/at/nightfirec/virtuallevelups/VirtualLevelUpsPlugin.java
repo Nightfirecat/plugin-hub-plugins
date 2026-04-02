@@ -59,8 +59,6 @@ import net.runelite.api.gameval.InterfaceID;
 import net.runelite.api.gameval.VarbitID;
 import net.runelite.api.widgets.Widget;
 import net.runelite.client.callback.ClientThread;
-import net.runelite.client.chat.ChatMessageManager;
-import net.runelite.client.chat.QueuedMessage;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.game.chatbox.ChatboxPanelManager;
@@ -105,10 +103,6 @@ public class VirtualLevelUpsPlugin extends Plugin
 
 	@Inject
 	private ConfigManager configManager;
-
-	@Getter(AccessLevel.PACKAGE)
-	@Inject
-	private ChatMessageManager chatMessageManager;
 
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("MMM. dd, yyyy");
 
@@ -264,12 +258,12 @@ public class VirtualLevelUpsPlugin extends Plugin
 
 		clientThread.invoke(this::setFireworksGraphic);
 
-		chatMessageManager.queue(QueuedMessage.builder()
-			.type(ChatMessageType.GAMEMESSAGE)
-			.runeLiteFormattedMessage(skillExperience == Experience.MAX_SKILL_XP
+		client.addChatMessage(ChatMessageType.GAMEMESSAGE,
+			"",
+			skillExperience == Experience.MAX_SKILL_XP
 				? "Congratulations, you've just reached max experience in " + skillName + '!'
-				: "Congratulations, you've just advanced your " + skillName + " level. You are now virtual level " + skillLevel + '.')
-			.build());
+				: "Congratulations, you've just advanced your " + skillName + " level. You are now virtual level " + skillLevel + '.',
+			"");
 
 		if (client.getVarbitValue(VarbitID.OPTION_LEVEL_UP_MESSAGE_DISABLED) == 0)
 		{
