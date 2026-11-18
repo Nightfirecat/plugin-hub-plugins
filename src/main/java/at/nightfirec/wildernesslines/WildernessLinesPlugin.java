@@ -28,41 +28,28 @@ package at.nightfirec.wildernesslines;
 
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Provides;
-import java.awt.Color;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.Toolkit;
-import java.awt.datatransfer.StringSelection;
 import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 import javax.inject.Inject;
 import lombok.AccessLevel;
 import lombok.Getter;
-import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
 import net.runelite.api.Constants;
 import net.runelite.api.Perspective;
 import net.runelite.api.WorldView;
 import net.runelite.api.coords.LocalPoint;
-import net.runelite.api.coords.WorldPoint;
-import net.runelite.api.events.CommandExecuted;
-import net.runelite.api.events.GameTick;
 import net.runelite.api.events.WorldViewLoaded;
-import net.runelite.api.gameval.VarbitID;
 import net.runelite.api.geometry.Geometry;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.OverlayManager;
-import net.runelite.client.util.ColorUtil;
-import net.runelite.client.util.LinkBrowser;
 
 @PluginDescriptor(
 	name = "Wilderness Lines",
@@ -166,8 +153,6 @@ public class WildernessLinesPlugin extends Plugin
 		FORCE_MOVE_IGNORE_AREA.add(new Area(SEED_POD_TELE_TILE));
 	}
 
-	private static final String GITHUB_REPO = "https://github.com/nightfirecat/plugin-hub-plugins";
-
 	@Getter(AccessLevel.PACKAGE)
 	private GeneralPath drawPathsMulti = new GeneralPath();
 	@Getter(AccessLevel.PACKAGE)
@@ -177,16 +162,9 @@ public class WildernessLinesPlugin extends Plugin
 	@Getter(AccessLevel.PACKAGE)
 	private GeneralPath drawPaths30Lines = new GeneralPath();
 
-	private final Set<WorldPoint> multiAreaMismatchedPoints = new HashSet<>();
-	private WorldPoint wpLastTick;
-	private boolean alertingMultiAreaMismatch;
-
 	@Inject
 	private WildernessLinesOverlay overlay;
 
-
-	@Inject
-	private WildernessLinesConfig config;
 
 	@Inject
 	private OverlayManager overlayManager;
@@ -218,8 +196,6 @@ public class WildernessLinesPlugin extends Plugin
 		drawPathsSpear.reset();
 		drawPaths20Lines.reset();
 		drawPaths30Lines.reset();
-		multiAreaMismatchedPoints.clear();
-		alertingMultiAreaMismatch = false;
 	}
 
 	@Subscribe
@@ -236,90 +212,6 @@ public class WildernessLinesPlugin extends Plugin
 
 			});
 		}
-	}
-
-	@Subscribe
-	private void onGameTick(GameTick e)
-	{
-		if (client.getVarbitValue(VarbitID.INSIDE_WILDERNESS) != 0)
-		{
-			final WorldPoint currentWp = client.getLocalPlayer().getWorldLocation();
-
-			if (wpLastTick != null
-				// Some teleports, such as the Royal seed pod, have entrance animations which preserve var values until
-				// the animation completes. Due to that, it is most practical to avoid tracking movement over more than
-				// 2 tiles at once, as it is a teleport and not valid for consideration. This also should remove a class
-				// of bugs where you could teleport from low wilderness to another area in the wilderness with a
-				// change of multi-combat status.
-				&& currentWp.distanceTo(wpLastTick) <= 2)
-			{
-				final boolean inMultiCombat = client.getVarbitValue(VarbitID.MULTIWAY_INDICATOR) == 1;
-				final Point location = new Point(wpLastTick.getX(), wpLastTick.getY());
-
-				final boolean areaMismatch = (inMultiCombat ^ MULTI_AREA.contains(location))
-					// When crossing several force-move areas such as the wilderness agility course bridge, north lava
-					// maze shortcut, etc., the multi-combat indicator does not change until you've either fallen off
-					// (which typically moves you more than 2 tiles, therefore is guarded above) or reached the other
-					// side. Hence, do not warn for such areas.
-					&& !FORCE_MOVE_IGNORE_AREA.contains(location);
-				if (areaMismatch)
-				{
-					multiAreaMismatchedPoints.add(wpLastTick);
-				}
-
-				final boolean shouldAlert = areaMismatch && config.multiAreaMismatchAlert();
-//				if (shouldAlert && !alertingMultiAreaMismatch)
-//				{
-//					client.addChatMessage(ChatMessageType.PUBLICCHAT, "Wilderness Lines", ColorUtil.prependColorTag("Encountered unexpected multi-combat areas", Color.RED), "");
-//					client.addChatMessage(ChatMessageType.PUBLICCHAT, "Wilderness Lines", "Please type '::reportUnexpectedAreas' to report this bug to " + GITHUB_REPO, "");
-//				}
-
-				alertingMultiAreaMismatch = shouldAlert;
-			}
-
-			wpLastTick = currentWp;
-		}
-		else
-		{
-			// Tracking wp at all times could lead to false positives when teleporting in or out of wildy.
-			wpLastTick = null;
-		}
-	}
-
-	@Subscribe
-	private void onCommandExecuted(CommandExecuted e)
-	{
-		if (!e.getCommand().equalsIgnoreCase("reportUnexpectedAreas"))
-		{
-			return;
-		}
-
-		if (multiAreaMismatchedPoints.isEmpty())
-		{
-			client.addChatMessage(ChatMessageType.PUBLICCHAT, "Wilderness Lines", "No unexpected areas cached, opening issue report form", "");
-			LinkBrowser.browse(GITHUB_REPO + "/issues/new?labels=plugin:%20wilderness-lines");
-			return;
-		}
-
-		// Check size; copy to clipboard and open not-prepopulated form if length > 5k
-		final StringBuilder pointsListBuilder = new StringBuilder();
-		multiAreaMismatchedPoints.forEach((point) -> pointsListBuilder.append("* ").append(point.getX()).append(", ").append(point.getY()).append("%0A"));
-		final String pointsList = pointsListBuilder.toString();
-		final String issueList;
-		if (pointsList.length() > 5000)
-		{
-			final StringSelection stringSelection = new StringSelection(pointsList.replaceAll("%0A", "\n"));
-			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);
-			client.addChatMessage(ChatMessageType.PUBLICCHAT, "Wilderness Lines", "Too many unexpected areas to pre-populate form, please paste from clipboard", "");
-			issueList = "<!--%20PASTE%20HERE%20-->%0A";
-		}
-		else
-		{
-			client.addChatMessage(ChatMessageType.PUBLICCHAT, "Wilderness Lines", "Pre-populating and opening issue report form", "");
-			issueList = pointsList;
-		}
-
-		LinkBrowser.browse(GITHUB_REPO + "/issues/new?labels=plugin:%20wilderness-lines&body=The%20plugin%20is%20not%20correct%20for%20the%20following%20areas:%0A%0A" + issueList);
 	}
 
 	private void transformWorldToLocal(float[] coords)
